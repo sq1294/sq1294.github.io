@@ -41,13 +41,16 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
 
 
 
    <style>
     body{
-       background-image: url(https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fclubimg.club.vmall.com%2Fdata%2Fattachment%2Fforum%2F202106%2F21%2F215459zwfqep76jcvn0qhd.jpg&refer=http%3A%2F%2Fclubimg.club.vmall.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641003950&t=5a61fa0e9106c58bcd0d8dc7afc277d2);
+       background-image: url(http://cdn-ali-img-shstaticbz.shanhutech.cn/bizhi/staticwp/202110/529e6cb9b6d2e79c6398008c281aa3b2--3565899390.jpg);
        background-repeat:no-repeat;
        background-size: 100% 100%;
        background-attachment:fixed;
@@ -582,83 +585,37 @@
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/12/01/%E5%8D%8E%E4%B8%BABGP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/">
+                    <a href="/2021/12/04/VPN%E8%99%9A%E6%8B%9F%E4%B8%93%E7%94%A8%E7%BD%91/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="华为BGP基础配置">
+                            <img src="/medias/featureimages/30.jpg" class="responsive-img" alt="VPN虚拟专用网">
                             
-                            <span class="card-title">华为BGP基础配置</span>
+                            <span class="card-title">VPN虚拟专用网</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                BGP基础配置
+                                 VPN虚拟专用网
+GNS3模拟
 
-1.ebgp邻居之间传路由修改下一条2.ibgp邻居之间传路由不修改下一条3.R4上看到1.1.1.1的路由吓一跳是12.1.1.1不可达，无效4.BGP只会把最优路径传给邻居，所以R5上收不到路由5.解决方案：配置如下命
+首先，配置帧中继（此处略，参考帧中继Frame Relay实验）网络通后再配置VPNR1:enconf tcrypto isakmp policy 1    //配置IKE策略1encryption 3
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/%E5%8D%8E%E4%B8%BA/">
-                            <span class="chip bg-color">华为</span>
-                        </a>
-                        
-                        <a href="/tags/BGP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/">
-                            <span class="chip bg-color">BGP基础配置</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2021/12/01/ospf%E6%80%BB%E7%BB%93/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="ospf总结">
-                            
-                            <span class="card-title">ospf总结</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                ospf总结
-
-Packet types    Hello：发现、建立和维护邻居关系    DBD：链路状态数据库描述报文，选举主从／LSA的头部信息    LSR：请求报文，索要LSA    LSU：给LSA    LS Ack：确认Ne
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
-                            </span>
-                            <span class="publish-author">
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
                                 
                             </span>
                         </div>
@@ -671,8 +628,8 @@ Packet types    Hello：发现、建立和维护邻居关系    DBD：链路状�
                             <span class="chip bg-color">Cisco</span>
                         </a>
                         
-                        <a href="/tags/ospf/">
-                            <span class="chip bg-color">ospf</span>
+                        <a href="/tags/VPN%E8%99%9A%E6%8B%9F%E4%B8%93%E7%94%A8%E7%BD%91/">
+                            <span class="chip bg-color">VPN虚拟专用网</span>
                         </a>
                         
                     </div>
@@ -684,33 +641,36 @@ Packet types    Hello：发现、建立和维护邻居关系    DBD：链路状�
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/12/01/DHCP%E9%85%8D%E7%BD%AE/">
+                    <a href="/2021/12/04/OSPF%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="CiscoDHCP配置">
+                            <img src="/medias/featureimages/28.jpg" class="responsive-img" alt="OSPF路由选择协议">
                             
-                            <span class="card-title">CiscoDHCP配置</span>
+                            <span class="card-title">OSPF路由选择协议</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                CiscoDHCP配置
+                                      OSPF路由选择协议
 
-Router(config)#service dhcp \开启dhcp服务，默认开启
- Router(config)#no ip dhcp conflict logging \检测到地址冲突会记录到conflict
+R1:enconf thostname R1router ospf 1 //配置路由选择进程 process_ID 在不同路由器之间不需匹配area 1 authentication message-di
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
                                 
                             </span>
                         </div>
@@ -723,8 +683,8 @@ Router(config)#service dhcp \开启dhcp服务，默认开启
                             <span class="chip bg-color">Cisco</span>
                         </a>
                         
-                        <a href="/tags/DHCP%E9%85%8D%E7%BD%AE/">
-                            <span class="chip bg-color">DHCP配置</span>
+                        <a href="/tags/OSPF%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE/">
+                            <span class="chip bg-color">OSPF路由选择协议</span>
                         </a>
                         
                     </div>
@@ -736,31 +696,91 @@ Router(config)#service dhcp \开启dhcp服务，默认开启
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/12/01/Cisco%E5%B8%A7%E4%B8%AD%E7%BB%A7%E9%85%8D%E7%BD%AE/">
+                    <a href="/2021/12/04/%EF%81%ACEIGRP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Cisco帧中继配置">
+                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="EIGRP路由协议">
                             
-                            <span class="card-title">Cisco帧中继配置</span>
+                            <span class="card-title">EIGRP路由协议</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                   帧中继配置
-R1:interface Serial3/0 ip address 192.168.1.1 255.255.255.0 encapsulation frame-relay serial restart-delay 0 fr
+                                        EIGRP路由协议
+
+PC1:enconf thostname PC1no ip routingint f0/0ip address 192.168.186.1 255.255.255.0no shutexitip defa
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/cisco/">
+                            <span class="chip bg-color">cisco</span>
+                        </a>
+                        
+                        <a href="/tags/EIGRP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/">
+                            <span class="chip bg-color">EIGRP路由协议</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2021/12/04/RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="RIP路由协议">
+                            
+                            <span class="card-title">RIP路由协议</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                   RIP路由协议
+
+配置：其他ip地址配置略RTA:enconf troute rip    //启动rip路由选择协议 ，rip是有类协议network 172.16.4.0 //设置哪些接口参与路由选择进程network 10.3.
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
                                 
                             </span>
                         </div>
@@ -773,8 +793,8 @@ R1:interface Serial3/0 ip address 192.168.1.1 255.255.255.0 encapsulation frame-
                             <span class="chip bg-color">Cisco</span>
                         </a>
                         
-                        <a href="/tags/%E5%B8%A7%E4%B8%AD%E7%BB%A7%E9%85%8D%E7%BD%AE/">
-                            <span class="chip bg-color">帧中继配置</span>
+                        <a href="/tags/RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/">
+                            <span class="chip bg-color">RIP路由协议</span>
                         </a>
                         
                     </div>
@@ -786,31 +806,200 @@ R1:interface Serial3/0 ip address 192.168.1.1 255.255.255.0 encapsulation frame-
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/12/01/Cisco%E7%BB%84%E6%92%AD%E9%85%8D%E7%BD%AE/">
+                    <a href="/2021/12/04/%E9%85%8D%E7%BD%AE%E6%9C%89%E5%AD%90%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B8%A7%E4%B8%AD%E7%BB%A7/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Cisco组播配置">
+                            <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="配置有子接口的帧中继">
                             
-                            <span class="card-title">Cisco组播配置</span>
+                            <span class="card-title">配置有子接口的帧中继</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                   组播配置
-ip multicast-routing  \在路由上开启组播路由 ip pim sparse-mode \在接口下开启plm稀疏模式ip igmp join-group 239.1.1.1 \接口需要侦听某个组播组ip p
+                                     配置有子接口的帧中继
+
+多点子接口：R0:enconf tint s0/0/0encap frame-relay ietfframe-relay lmi-type ciscono shutexitint s0/0/0.1 mult
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/cisco/">
+                            <span class="chip bg-color">cisco</span>
+                        </a>
+                        
+                        <a href="/tags/%E9%85%8D%E7%BD%AE%E6%9C%89%E5%AD%90%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B8%A7%E4%B8%AD%E7%BB%A7/">
+                            <span class="chip bg-color">配置有子接口的帧中继</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2021/12/04/%EF%81%ACFrameRelay/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="FrameRelay">
+                            
+                            <span class="card-title">FrameRelay</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                  FrameRelay
+
+配置帧中继交换机：FrSwitch:enconf tframe-relay switching //将路由器配置为帧中继交换机int s1/0encapsulation frame-relay //封装帧中继cl
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/cisco/">
+                            <span class="chip bg-color">cisco</span>
+                        </a>
+                        
+                        <a href="/tags/%EF%81%ACFrame-Relay/">
+                            <span class="chip bg-color">Frame Relay</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2021/12/04/%E6%89%A9%E5%B1%95acl%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="扩展acl控制列表">
+                            
+                            <span class="card-title">扩展acl控制列表</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                   扩展acl控制列表
+R0:enconf thostname R0access-list 100 permit tcp host 10.0.0.2 host 10.0.0.1 established //允许.1到.2的返回tcp流量a
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/cisco/">
+                            <span class="chip bg-color">cisco</span>
+                        </a>
+                        
+                        <a href="/tags/%E6%89%A9%E5%B1%95acl%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/">
+                            <span class="chip bg-color">扩展acl控制列表</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2021/12/04/%EF%81%ACACL%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/26.jpg" class="responsive-img" alt="ACL访问控制列表">
+                            
+                            <span class="card-title">ACL访问控制列表</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                         ACL访问控制列表
+
+标准acl限制对路由器vty的访问：enconf taccess-list 1 permit 192.168.186.1access-list 1 deny 192.168.186.0 0.0.0.2
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
                                 
                             </span>
                         </div>
@@ -823,8 +1012,8 @@ ip multicast-routing  \在路由上开启组播路由 ip pim sparse-mode \在接
                             <span class="chip bg-color">Cisco</span>
                         </a>
                         
-                        <a href="/tags/%E7%BB%84%E6%92%AD%E9%85%8D%E7%BD%AE/">
-                            <span class="chip bg-color">组播配置</span>
+                        <a href="/tags/%EF%81%ACACL%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/">
+                            <span class="chip bg-color">ACL访问控制列表</span>
                         </a>
                         
                     </div>
@@ -836,31 +1025,36 @@ ip multicast-routing  \在路由上开启组播路由 ip pim sparse-mode \在接
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/12/01/%E4%BA%8C%E5%B1%82%E5%A4%8D%E4%B9%A0/">
+                    <a href="/2021/12/04/HDLC-PPP/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="二层复习">
+                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="HDLC/PPP">
                             
-                            <span class="card-title">二层复习</span>
+                            <span class="card-title">HDLC/PPP</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                  二层复习 VLANsvi接口不up起不来的原因有：1，没有先创建该vlan，int vlan 10这跳命令不会自动创建vlan的2，要有活跃的物理up接口属于此vlan
-trunk有两种协议ISL—思科私有协议 是基于芯片模拟器是用不了
+                                     HDLC/PPP
+
+HDLC为默认封装。若配置为其他协议封转后，想使用hdlc，可以用在接口配置模式encapsulation hdlc //封装hdlc高级数据链路控制协议keepalive 10 //设置轮询时间间隔  ppp
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
                                 
                             </span>
                         </div>
@@ -869,12 +1063,12 @@ trunk有两种协议ISL—思科私有协议 是基于芯片模拟器是用不�
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/Cisco/">
-                            <span class="chip bg-color">Cisco</span>
+                        <a href="/tags/cisco/">
+                            <span class="chip bg-color">cisco</span>
                         </a>
                         
-                        <a href="/tags/%E4%BA%8C%E5%B1%82%E5%A4%8D%E4%B9%A0/">
-                            <span class="chip bg-color">二层复习</span>
+                        <a href="/tags/HDLC-PPP/">
+                            <span class="chip bg-color">HDLC/PPP</span>
                         </a>
                         
                     </div>
@@ -886,32 +1080,35 @@ trunk有两种协议ISL—思科私有协议 是基于芯片模拟器是用不�
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/12/01/asa%E5%A4%9A%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/">
+                    <a href="/2021/12/04/NAT-NAPT/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="asa多模式配置">
+                            <img src="/medias/featureimages/28.jpg" class="responsive-img" alt="NAT/NAPT">
                             
-                            <span class="card-title">asa多模式配置</span>
+                            <span class="card-title">NAT/NAPT</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                防火墙多模式ASA配置
-
-(config)#Mode multiple \单模式转换到多模式，配置会被清空(config)#show firewall \查看防火墙类型，router为路由三层，transparent为交换二层(config
+                                   NAT/NAPT
+配置：enconf tip nat inside source static 192.168.186.254 202.0.0.3//定义nat静态转换int f0/0ip nat inside //在连接到内部的接口
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-04
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Cisco/" class="post-category">
+                                    Cisco
+                                </a>
+                                
                                 
                             </span>
                         </div>
@@ -920,161 +1117,12 @@ trunk有两种协议ISL—思科私有协议 是基于芯片模拟器是用不�
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/Cisco/">
-                            <span class="chip bg-color">Cisco</span>
+                        <a href="/tags/cisco/">
+                            <span class="chip bg-color">cisco</span>
                         </a>
                         
-                        <a href="/tags/%E9%98%B2%E7%81%AB%E5%A2%99%E5%A4%9A%E6%A8%A1%E5%BC%8FASA%E9%85%8D%E7%BD%AE/">
-                            <span class="chip bg-color">防火墙多模式ASA配置</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2021/12/01/%E7%83%AD%E5%A4%87/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="vrrp）">
-                            
-                            <span class="card-title">vrrp）</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                  热备(hsrp 和 vrrp)
-提高网络的可靠性，实现冗余。将局域网中的一组设备（包括一个master即活动设备，和若干个backup即备份设备）组成一个虚拟路由器，称为一个备份组。要有两台以上的设备。设备共用一个虚拟IP，做为局域网内
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/%E7%A5%9E%E5%B7%9E%E6%95%B0%E7%A0%81/">
-                            <span class="chip bg-color">神州数码</span>
-                        </a>
-                        
-                        <a href="/tags/%E7%83%AD%E5%A4%87-hsrp-%E5%92%8C-vrrp/">
-                            <span class="chip bg-color">热备(hsrp 和 vrrp)</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2021/12/01/%E7%A5%9E%E5%B7%9E%E6%95%B0%E7%A0%81DHCP%E9%85%8D%E7%BD%AE/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="神州数码DHCP配置">
-                            
-                            <span class="card-title">神州数码DHCP配置</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                  DHCP
-路由器需开启DHCP服务（ip  dhcpd  enable）；交换机也需开启DHCP 服务器和中继代理服务（service dhcp），以及配置DHCP中继转发DHCP广播报文（ip  forward-protocol  u
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/DHCP%E9%85%8D%E7%BD%AE/">
-                            <span class="chip bg-color">DHCP配置</span>
-                        </a>
-                        
-                        <a href="/tags/%E7%A5%9E%E5%B7%9E%E6%95%B0%E7%A0%81/">
-                            <span class="chip bg-color">神州数码</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2021/12/01/%E7%A5%9E%E5%B7%9E%E6%95%B0%E7%A0%81VLAN%E5%88%92%E5%88%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="神州数码VLAN划分与应用">
-                            
-                            <span class="card-title">神州数码VLAN划分与应用</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                   VLAN划分及应用 VLAN的划分：DCRS-5650-28(config)#vlan     100（创建VLAN）DCRS-5650-28(config-vlan100)#switchport   interface     e0
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-01
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Caleb
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/%E7%A5%9E%E5%B7%9E%E6%95%B0%E7%A0%81/">
-                            <span class="chip bg-color">神州数码</span>
-                        </a>
-                        
-                        <a href="/tags/VLAN-%E5%88%92%E5%88%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
-                            <span class="chip bg-color">VLAN 划分与应用</span>
+                        <a href="/tags/NAT-NAPT/">
+                            <span class="chip bg-color">NAT/NAPT</span>
                         </a>
                         
                     </div>
@@ -1099,7 +1147,7 @@ trunk有两种协议ISL—思科私有协议 是基于芯片模拟器是用不�
             
         </div>
         <div class="page-info col m4 l4 hide-on-small-only">
-            <div class="center-align b-text-gray">1 / 2</div>
+            <div class="center-align b-text-gray">1 / 3</div>
         </div>
         <div class="col s6 m4 l4">
             
@@ -1115,7 +1163,8 @@ trunk有两种协议ISL—思科私有协议 是基于芯片模拟器是用不�
 
 
 
-    <footer class="page-footer bg-color">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer class="page-footer bg-color">
     
         <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
 <style>
@@ -1285,6 +1334,7 @@ trunk有两种协议ISL—思科私有协议 是基于芯片模拟器是用不�
 </footer>
 
 <div class="progress-bar"></div>
+
 
 
     <!-- 搜索遮罩框 -->
@@ -1550,6 +1600,6 @@ $(function () {
     <script src="/libs/instantpage/instantpage.js" type="module"></script>
     
 
-</body>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 
 </html>

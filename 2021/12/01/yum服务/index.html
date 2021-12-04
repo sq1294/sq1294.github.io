@@ -5,8 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="yum服务, 苏七">
-    <meta name="description" content=" yum服务cd /etc/yum.repos.d/lsrm -rf *vi dvd.repo[dvd]name=dvdbaseurl=file:///dvdgpgcheck=0enabled=1
-mkdir /dvdmount /dev/">
+    <meta name="description" content=" yum服务
+概念：服务（服务器配置）Yum源概念:如果你linux用于搭建和配置服务器的话，那肯定要基于网络中的各种服务和协议，但部署这些服务大多数要先下载他的安装包，如果你刚好又是字符界面的，那么下东西的方式也和windows的图形化界">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -42,13 +42,16 @@ mkdir /dvdmount /dev/">
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
 
 
 
    <style>
     body{
-       background-image: url(https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fclubimg.club.vmall.com%2Fdata%2Fattachment%2Fforum%2F202106%2F21%2F215459zwfqep76jcvn0qhd.jpg&refer=http%3A%2F%2Fclubimg.club.vmall.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641003950&t=5a61fa0e9106c58bcd0d8dc7afc277d2);
+       background-image: url(http://cdn-ali-img-shstaticbz.shanhutech.cn/bizhi/staticwp/202110/529e6cb9b6d2e79c6398008c281aa3b2--3565899390.jpg);
        background-repeat:no-repeat;
        background-size: 100% 100%;
        background-attachment:fixed;
@@ -331,7 +334,7 @@ mkdir /dvdmount /dev/">
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -465,6 +468,15 @@ mkdir /dvdmount /dev/">
                 </div>
                 <div class="col s5 right-align">
                     
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Linux/" class="post-category">
+                                Linux
+                            </a>
+                        
+                    </div>
+                    
                 </div>
             </div>
 
@@ -479,7 +491,7 @@ mkdir /dvdmount /dev/">
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-12-01
+                    2021-12-04
                 </div>
                 
 
@@ -498,9 +510,13 @@ mkdir /dvdmount /dev/">
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p> yum服务<br>cd /etc/yum.repos.d/<br>ls<br>rm -rf *<br>vi dvd.repo<br>[dvd]<br>name=dvd<br>baseurl=file:///dvd<br>gpgcheck=0<br>enabled=1</p>
-<p>mkdir /dvd<br>mount /dev/cdrom /dvd</p>
-<p>yum install -y 服务</p>
+                <p> yum服务</p>
+<p>概念：<br>服务（服务器配置）<br>Yum源概念:如果你linux用于搭建和配置服务器的话，那肯定要基于网络中的各种服务和协<br>议，但部署这些服务大多数要先下载他的安装包，如果你刚好又是字符界面的，那么下东西<br>的方式也和windows的图形化界面不一样，图形化可以根据引导点击下载，但linux的字符<br>界面就不一样了，需要用命令去下载，一般其常用的命令有两种，一个是rpm命令源码包<br> 安装，一个是yum命令安装，碍于依赖性（b站兄弟连课程中或百度可自行了解），所以大<br>多数情况下都用的是yum命令下载安装包，但是想使用yum命令是需要去配置yum源的<br>（可理解为支持yum命令的一些参数和操作），这里只介绍本地yum源的配置。</p>
+<p>1、创建一个光盘挂载点   <img src="https://s2.loli.net/2021/12/04/EMaSKLnBrme2Djs.png"></p>
+<p>2、挂载光盘到/media/cdrom下  <img src="https://s2.loli.net/2021/12/04/HwFitLoaNSe9J2z.png"></p>
+<p>3、进入yum源配置目录下，给名为CentOS-Base的文件改名，加上后缀为.repo，使网络yum源失效  <img src="https://s2.loli.net/2021/12/04/rfQ519gl7tDhz3K.png"><br>（因为系统先检测的是网络yum源，但是你又没有网，所以网络yum源是用不了的。<br>系统识别yum是根据他的后缀，只要后缀为.repo的，系统一般都会认定为Yum文件，<br>所以让系统识别不出来这个文件，自然网络yum源就失效了。让系统识别不出来的办<br>法就是修改他的后缀）</p>
+<p>5、<img src="https://s2.loli.net/2021/12/04/8smgHuTwULiZ6I1.png" alt=" "><br>      <img src="https://s2.loli.net/2021/12/04/ngk9FatsQR2zGeY.png" alt=" "><br>      <img src="https://s2.loli.net/2021/12/04/JpotTybVHgZcwml.png" alt=" "><br>（编辑名为CentOS-Media.repo的文件，进去后找到enabled=0这行（第20行），并将0<br>修改为1（0为关闭，1为启动），然后就可以保存退出了。【第一张是没改之前的，第二张<br>是改了之后的</p>
+<p>6、配置完了本地yum源后就可以用yum源下东西了，因为CentOS6.5是默认没有vim<br>编辑器的，需要我们手动下载，我们测试一下.<br> <img src="https://s2.loli.net/2021/12/04/uhtVqYl8xXD13vf.png" alt=" "><br>执行玩这一步以后就是下载过程，我就不截图了<br>-y表示自动确认 install表示安装 后面跟包名</p>
 
                 
             </div>
@@ -722,38 +738,33 @@ mkdir /dvdmount /dev/">
     </div>
 
     
-        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
-<link rel="stylesheet" href="/css/my-gitalk.css">
 
-<div class="card gitalk-card" data-aos="fade-up">
-    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
-        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
-        <span>评论</span>
+    
+
+    
+
+    
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC81NDg2MC8zMTMyOQ">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
     </div>
-    <div id="gitalk-container" class="card-content"></div>
+    <!-- City版安装代码已完成 -->
 </div>
-
-<script src="/libs/gitalk/gitalk.min.js"></script>
-<script>
-    let gitalk = new Gitalk({
-        clientID: '',
-        clientSecret: '',
-        repo: '',
-        owner: '',
-        admin: null,
-        id: '2021-12-01T10-30-05',
-        distractionFreeMode: false  // Facebook-like distraction free mode
-    });
-
-    gitalk.render('gitalk-container');
-</script>
-
-    
-
-    
-
-    
-
     
 
     
@@ -821,8 +832,12 @@ mkdir /dvdmount /dev/">
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Caleb
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Linux/" class="post-category">
+                                    Linux
+                                </a>
+                            
                             
                         </span>
                     </div>
@@ -853,7 +868,7 @@ mkdir /dvdmount /dev/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="启用光盘yun源">
+                        <img src="/medias/featureimages/27.jpg" class="responsive-img" alt="启用光盘yun源">
                         
                         <span class="card-title">启用光盘yun源</span>
                     </div>
@@ -870,8 +885,12 @@ mkdir /dvdmount /dev/">
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Caleb
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Linux/" class="post-category">
+                                    Linux
+                                </a>
+                            
                             
                         </span>
                     </div>
@@ -1018,7 +1037,8 @@ mkdir /dvdmount /dev/">
 
 
 
-    <footer class="page-footer bg-color">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer class="page-footer bg-color">
     
         <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
 <style>
@@ -1188,6 +1208,7 @@ mkdir /dvdmount /dev/">
 </footer>
 
 <div class="progress-bar"></div>
+
 
 
     <!-- 搜索遮罩框 -->
@@ -1453,6 +1474,6 @@ $(function () {
     <script src="/libs/instantpage/instantpage.js" type="module"></script>
     
 
-</body>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 
 </html>

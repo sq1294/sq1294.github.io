@@ -4,12 +4,423 @@
   
     
     <entry>
+      <title>VPN虚拟专用网</title>
+      <link href="/2021/12/04/VPN%E8%99%9A%E6%8B%9F%E4%B8%93%E7%94%A8%E7%BD%91/"/>
+      <url>/2021/12/04/VPN%E8%99%9A%E6%8B%9F%E4%B8%93%E7%94%A8%E7%BD%91/</url>
+      
+        <content type="html"><![CDATA[<pre><code> VPN虚拟专用网GNS3模拟</code></pre><p><img src="https://s2.loli.net/2021/12/04/9aJpkoUgLAsGezv.png"><br>首先，配置帧中继（此处略，参考帧中继Frame Relay实验）网络通后再配置VPN<br>R1:<br>en<br>conf t<br>crypto isakmp policy 1    //配置IKE策略1<br>encryption 3des    //设置加密算法为3des<br>authentication pre-share        //IKE策略1的验证方法设为pre-share<br>group 2    //1024位Diffie-Hellman<br>exit<br>crypto isakmp key test123 address 202.96.1.2    //设置与共享密钥为test123<br>crypto ipsec transform-set VPNtag ah-md5-hmac esp-des    //创建交换集 设AH 和DES<br>end<br>conf t<br>crypto map VPNdemo 10 ipsec-isakmp        //定义保密映射，创建保密图<br>set peer 202.96.1.2        //设置隧道对端IP地址<br>set transform-set VPNtag    //指定要使用的交换集<br>match address 101        //授权保密列表来确定受保护的流量</p><p>int tunnel 0    //定义隧道接口<br>ip address 192.168.1.1 255.255.255.0        //设置隧道IP<br>tunnel source 202.96.1.1        //设置隧道源地址<br>tunnel destination 202.96.1.2        //隧道目的端地址<br>crypto map VPNdemo        //应用保密图于此接口<br>no shut<br>exit<br>ip route 0.0.0.0 0.0.0.0 202.96.1.2        //设置默认路由<br>ip route 172.22.2.0 255.255.255.0 192.168.1.2    //设置到网段172.22.2.0的路由<br>access-list 101 permit gre host 202.96.1.1 host 202.96.1.2        //定义存取列表<br>int s1/0<br>crypto map VPNdemo  //应用保密图于此接口</p><p>R2:<br>en<br>conf t<br>crypto isakmp policy 1<br>encryption 3des<br>authentication pre-share<br>group 2<br>exit<br>crypto isakmp key test123 address 202.96.1.1<br>crypto ipsec transform-set VPNtag ah-md5-hmac esp-des<br>end<br>conf t<br>crypto map VPNdemo 10 ipsec-isakmp<br>set peer 202.96.1.1<br>set transform-set VPNtag<br>match address 101</p><p>int tunnel 0<br>ip address 192.168.1.2 255.255.255.0<br>tunnel source 202.96.1.2<br>tunnel destination 202.96.1.1<br>crypto map VPNdemo<br>no shut<br>exit<br>ip route 0.0.0.0 0.0.0.0 202.96.1.1<br>ip route 172.22.1.0 255.255.255.0 192.168.1.1<br>access-list 101 permit gre host 202.96.1.2 host 202.96.1.1<br>int s1/0<br>crypto map VPNdemo</p><p>测试结果：<br><img src="https://s2.loli.net/2021/12/04/9OfDHSFpXigzdUM.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cisco </tag>
+            
+            <tag> VPN虚拟专用网 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>OSPF路由选择协议</title>
+      <link href="/2021/12/04/OSPF%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE/"/>
+      <url>/2021/12/04/OSPF%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE/</url>
+      
+        <content type="html"><![CDATA[<pre><code>      OSPF路由选择协议</code></pre><p><img src="https://s2.loli.net/2021/12/04/9PLJFgMZUYKTWeV.png"><br>R1:<br>en<br>conf t<br>hostname R1<br>router ospf 1 //配置路由选择进程 process_ID 在不同路由器之间不需匹配<br>area 1 authentication message-digest //配置区域级身份验证，若有接口设置，则接口设置优先<br>network 192.168.69.0 0.0.0.255 area 0 //配置接口相连子网 并将接口放在相应区域<br>network 192.168.3.0 0.0.0.255 area 1<br>int s0/0/1<br>ip ospf authentication-key 123456 //OSPF身验认证，在接口上设置<br>ip ospf authentication //认证方式为明文认证<br>int f0/0<br>ip ospf message-digest-key 1 md5 liao //认证方式为MD5认证</p><p>R2:<br>en<br>conf t<br>hostname R2<br>router ospf 1<br>network 192.168.69.0 0.0.0.255 area 0<br>network 192.168.5.0 0.0.0.255 area 2<br>int s0/0/0<br>ip ospf authentication-key 123456<br>ip ospf authentication message-digest</p><p>R3:<br>en<br>conf t<br>hostname R3<br>router ospf 1<br>area 1 authentication message-digest<br>network 192.168.3.0 0.0.0.255 area 1<br>network 192.168.2.0 0.0.0.255 area 1<br>passive-interface f0/1<br>int f0/0<br>ip ospf message-digest-key 1 md5 liao</p><p>R4:<br>en<br>conf t<br>hostname R4<br>router ospf 1<br>network 192.168.5.0 0.0.0.255 area 2<br>network 192.168.4.0 0.0.0.255 area 2<br>passive-int f0/1<br><img src="https://s2.loli.net/2021/12/04/nSyL4l6oBAR3JhI.png"><br><img src="https://s2.loli.net/2021/12/04/OBToyXlkrsznHW6.png"><br><img src="https://s2.loli.net/2021/12/04/4D9gC1X5jYxOzUu.png"><br><img src="https://s2.loli.net/2021/12/04/dhspTPneWjNlXvG.png"><br><img src="https://s2.loli.net/2021/12/04/dbYVptnsoIgk9NA.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cisco </tag>
+            
+            <tag> OSPF路由选择协议 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>EIGRP路由协议</title>
+      <link href="/2021/12/04/%EF%81%ACEIGRP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/"/>
+      <url>/2021/12/04/%EF%81%ACEIGRP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/</url>
+      
+        <content type="html"><![CDATA[<pre><code>        EIGRP路由协议</code></pre><p><img src="https://s2.loli.net/2021/12/04/N6nojGsZfqdzkOM.png"><br>PC1:<br>en<br>conf t<br>hostname PC1<br>no ip routing<br>int f0/0<br>ip address 192.168.186.1 255.255.255.0<br>no shut<br>exit<br>ip default-gateway 192.168.186.2</p><p>PC2:<br>en<br>conf t<br>hostname PC2<br>no ip routing<br>int f0/0<br>ip address 192.168.187.1 255.255.255.0<br>no shut<br>exit<br>ip default-gateway 192.168.187.2</p><p>PC3:<br>en<br>conf t<br>hostname PC3<br>no ip routing<br>int f0/0<br>ip address 192.168.188.1 255.255.255.0<br>no shut<br>exit<br>ip default-gateway 192.168.188.2</p><p>R1:<br>en<br>conf t<br>hostname R1<br>int f0/0<br>ip address 192.168.186.2 255.255.255.0<br>no shut<br>int f0/1<br>ip address 10.0.0.1 255.255.255.0<br>no shut<br>int f1/0<br>ip address 10.1.1.1 255.255.255.0<br>no shut<br>exit<br>router eigrp 100 //进入eigrp的子配置模式<br>network 192.168.186.0 //配置接口相连的网络<br>network 10.1.1.0 0.0.0.255<br>network 10.0.0.0 0.0.0.255<br>key chain R1Chain //创建密钥链 指定密钥名称<br>key 1 //指定密钥号 相邻路由器必须相同<br>key-string 0123456789 //指定密钥字符串 相邻路由器必须相同<br>int f0/1<br>ip authentication mode eigrp 100 md5 //在接口上为特定AS启用MD5身份验证<br>ip authentication key-chain eigrp 100 R1Chain //在接口上启用密钥链<br>int f1/0<br>ip authentication mode eigrp 100 md5<br>ip authentication key-chain eigrp 100 R1Chain</p><p>R2:<br>en<br>conf t<br>hostname R2<br>int f0/0<br>ip address 192.168.187.2 255.255.255.0<br>no shut<br>int f0/1<br>ip address 10.0.0.2 255.255.255.0<br>no shut<br>exit<br>router eigrp 100<br>network 192.168.187.0<br>network 10.0.0.0 0.0.0.255<br>key chain R2Chain<br>key 1<br>key-string 0123456789<br>int f0/1<br>ip authentication mode eigrp 100 md5<br>ip authentication key-chain eigrp 100 R2Chain</p><p>R3:<br>en<br>conf t<br>hostname R3<br>int f1/0<br>ip address 10.1.1.2 255.255.255.0<br>no shut<br>int f0/0<br>ip address 192.168.188.2 255.255.255.0<br>no shut<br>exit<br>router eigrp 100<br>network 192.168.188.0<br>network 10.1.1.0 0.0.0.255<br><img src="https://s2.loli.net/2021/12/04/n9ecuP74Uy3Td8r.png"><br><img src="https://s2.loli.net/2021/12/04/6E24HyGjXsMr71a.png"><br><img src="https://s2.loli.net/2021/12/04/2dXFaIfyjJWCzLv.png"><br><img src="https://s2.loli.net/2021/12/04/P32YD5ctRMWGqo7.png"><br><img src="https://s2.loli.net/2021/12/04/HnOJyuGo6Wdzle8.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> EIGRP路由协议 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>RIP路由协议</title>
+      <link href="/2021/12/04/RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/"/>
+      <url>/2021/12/04/RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/</url>
+      
+        <content type="html"><![CDATA[<pre><code>   RIP路由协议</code></pre><p><img src="https://s2.loli.net/2021/12/04/kaPGjTOgMxyldVU.png"><br>配置：其他ip地址配置略<br>RTA:<br>en<br>conf t<br>route rip    //启动rip路由选择协议 ，rip是有类协议<br>network 172.16.4.0 //设置哪些接口参与路由选择进程<br>network 10.3.0.0<br>network 192.168.1.0<br>version 2    //设置版本<br>no auto-summary&nbsp; //关闭路由协议自动聚合功能，不连续网段的路由汇总会出错<br>RTB:<br>en<br>conf t<br>route rip<br>network 172.16.4.0<br>network 172.16.3.0<br>version 2<br>no auto-summary<br>passive-interface f0/0 //设置f0/0为被动接口 不发送rip协议报文，但接收<br>RTC:<br>en<br>conf t<br>route rip<br>network 10.2.0.0<br>network 10.3.0.0<br>version 2<br>no auto-summary<br>passive-interface f0/0<br>RTD:<br>en<br>conf t<br>route rip<br>network 192.168.1.0<br>network 192.168.2.0<br>version 2<br>no auto-summary<br>passive-interface f0/0<br>调试结果：在PCB上ping PCD<br><img src="https://s2.loli.net/2021/12/04/7oahILbURjSHnFy.png"><br><img src="https://s2.loli.net/2021/12/04/e6jZ5S9fJVYQxzq.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cisco </tag>
+            
+            <tag> RIP路由协议 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>配置有子接口的帧中继</title>
+      <link href="/2021/12/04/%E9%85%8D%E7%BD%AE%E6%9C%89%E5%AD%90%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B8%A7%E4%B8%AD%E7%BB%A7/"/>
+      <url>/2021/12/04/%E9%85%8D%E7%BD%AE%E6%9C%89%E5%AD%90%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B8%A7%E4%B8%AD%E7%BB%A7/</url>
+      
+        <content type="html"><![CDATA[<pre><code>     配置有子接口的帧中继</code></pre><p><img src="https://s2.loli.net/2021/12/04/9bDWwKzfLqoAF4N.png"><br>多点子接口：<br>R0:<br>en<br>conf t<br>int s0/0/0<br>encap frame-relay ietf<br>frame-relay lmi-type cisco<br>no shut<br>exit<br>int s0/0/0.1 multipoint //多点子接口<br>ip address 192.168.186.1 255.255.255.0<br>frame-relay interface-dlci 102//将DLCI关联到子接口 多点子接口上可分配多个DLCI<br>frame-relay interface-dlci 103<br>exit<br>router rip<br>network 192.168.186.0<br>network 172.18.0.0<br>R1:<br>en<br>conf t<br>int s0/0/0<br>encap frame-relay ietf<br>frame-relay lmi-type cisco<br>no shut<br>exit<br>int s0/0/0<br>ip address 192.168.186.2 255.255.255.0<br>no shut<br>exit<br>ip route 172.17.0.0 255.255.0.0 192.168.186.1 //解决水平分割问题而采用静态路由的方法<br>router rip<br>network 192.168.186.0<br>network 172.16.0.0<br>R2:<br>en<br>conf t<br>int s0/0/0<br>encap frame-relay ietf<br>frame-relay lmi-type cisco<br>no shut<br>exit<br>int s0/0/0<br>ip address 192.168.186.3 255.255.255.0<br>no shut<br>exit<br>ip route 172.16.0.0 255.255.0.0 192.168.186.1<br>router rip<br>network 192.168.186.0<br>network 172.17.0.0<br>主机1上ping主机2：<br><img src="https://s2.loli.net/2021/12/04/W7pXGsnvBuNVfSq.png"><br>点对点子接口：<br>R1、R2取消静态路由，其他保持不变。使用点对点子接口从而克服了rip等路由协议的水平分割问题。<br>点对点子接口：<br>R0:<br>en<br>conf t<br>int s0/0/0<br>encap frame-relay ietf<br>frame-relay lmi-type cisco<br>no shut<br>exit<br>int s0/0/0.1 point-to-point//点对点子接口<br>ip address 192.168.186.1 255.255.255.0<br>frame-relay interface-dlci 102 //为不同的子接口分配不同的DLCI，并分配不同网段的ip<br>int s0/0/0.2 point-to-point<br>ip address 192.168.187.1 255.255.255.0<br>frame-relay interface-dlci 103<br>exit<br>router rip<br>network 192.168.186.0<br>network 192.168.187.0<br>network 172.18.0.0<br>R1:<br>en<br>conf t<br>int s0/0/0<br>encap frame-relay ietf<br>frame-relay lmi-type cisco<br>no shut<br>exit<br>int s0/0/0<br>ip address 192.168.186.2 255.255.255.0<br>no shut<br>exit<br>router rip<br>network 192.168.186.0<br>network 172.16.0.0<br>R2:<br>en<br>conf t<br>int s0/0/0<br>encap frame-relay ietf<br>frame-relay lmi-type cisco<br>no shut<br>exit<br>int s0/0/0<br>ip address 192.168.187.2 255.255.255.0<br>no shut<br>exit<br>router rip<br>network 192.168.187.0<br>network 172.17.0.0</p><p>从主机2ping主机1发现可以ping通<br><img src="https://s2.loli.net/2021/12/04/vwrhE2fzWqo15pL.png"><br><img src="https://s2.loli.net/2021/12/04/Y8ldC31qFOcIafT.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> 配置有子接口的帧中继 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>FrameRelay</title>
+      <link href="/2021/12/04/%EF%81%ACFrameRelay/"/>
+      <url>/2021/12/04/%EF%81%ACFrameRelay/</url>
+      
+        <content type="html"><![CDATA[<pre><code>  FrameRelay</code></pre><p><img src="https://s2.loli.net/2021/12/04/3EfaNjbvYq4eSdr.png"><br>配置帧中继交换机：<br>FrSwitch:<br>en<br>conf t<br>frame-relay switching //将路由器配置为帧中继交换机<br>int s1/0<br>encapsulation frame-relay //封装帧中继<br>clock rate 64000 //设置串口时钟速率<br>frame-relay lmi-type cisco //设置帧中继的lmi类型<br>frame-relay intf-type dce//设置帧中继接口类型<br>frame-relay route 102 int s1/1 201 //配置帧中继DLCI路由<br>frame-relay route 103 int s1/2 301<br>no shut<br>int s1/1<br>encapsulation frame-relay<br>clock rate 64000<br>frame-relay lmi-type cisco<br>frame-relay intf-type dce<br>frame-relay route 201 int s1/0 102<br>frame-relay route 203 int s1/2 302<br>no shut<br>int s1/2<br>encapsulation frame-relay<br>clock rate 64000<br>frame-relay lmi-type cisco<br>frame-relay intf-type dce<br>frame-relay route 301 int s1/0 103<br>frame-relay route 302 int s1/1 203<br>no shut<br>将第三层地址映射到本地DLCI号<br>动态解析：<br>R1:R2:R3:<br>en<br>conf t<br>int s1/0<br>encap frame-relay<br>frame-relay lmi-type cisco //设置lmi类型<br>frame-relay inverse-arp //逆向ARP<br>int s1/0<br>ip add 192.168.186.1 255.255.255.0<br>no shut<br>ip add 192.168.186.2 255.255.255.0<br>no shut<br>ip add 192.168.186.3 255.255.255.0<br>no shut<br>手动解析：<br>R1:<br>int s1/0<br>no frame-relay inverse-arp //关闭帧中继逆向解析<br>frame-relay map ip 192.168.186.2 102//建立手动解析映射<br>frame-relay map ip 192.168.186.3 103<br>R2:<br>int s1/0<br>no frame-relay inverse-arp<br>frame-relay map ip 192.168.186.1 201<br>frame-relay map ip 192.168.186.3 203<br>R3:<br>int s1/0<br>no frame-relay inverse-arp<br>frame-relay map ip 192.168.186.1 301<br>frame-relay map ip 192.168.186.2 302<br><img src="https://s2.loli.net/2021/12/04/Zja1iCSUpfct3uv.png"><br><img src="https://s2.loli.net/2021/12/04/vqRK9HNJOL4DCA6.png"><br><img src="https://s2.loli.net/2021/12/04/s1OnAHYXBpTGrWc.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> Frame Relay </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>扩展acl控制列表</title>
+      <link href="/2021/12/04/%E6%89%A9%E5%B1%95acl%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/"/>
+      <url>/2021/12/04/%E6%89%A9%E5%B1%95acl%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/</url>
+      
+        <content type="html"><![CDATA[<p>   扩展acl控制列表</p><p><img src="https://s2.loli.net/2021/12/04/U3NRFgytp2X8qrM.png"><br>R0:<br>en<br>conf t<br>hostname R0<br>access-list 100 permit tcp host 10.0.0.2 host 10.0.0.1 established //允许.1到.2的返回tcp流量<br>access-list 100 permit tcp 10.0.0.3 0.0.0.0 host 192.168.186.2 eq www<br>access-list 100 permit icmp 10.0.0.4 0.0.0.255 192.168.186.2 0.0.0.0 echo-reply<br>access-list 100 deny ip any any<br>int f0/1<br>ip access-group 100 in<br>exit<br>line vty 0 4<br>password   Caleb</p><p>R1:<br>en<br>conf t<br>hostname R1<br>line vty 0 4<br>password  sq1294<br>exit<br>ip route 0.0.0.0 0.0.0.0 10.0.0.1</p><p>验证第一条acl：<br>第一条acl的作用是允许10.0.0.1到10.0.0.2的返回tcp流量（即带有标志的tcp流量）所以，<br>从10.0.0.1telnet 10.0.0.2然后从10.0.0.2返回应答给10.0.0.1是符合的，而从10.0.0.2 直接<br>telnet 10.0.0.1 的流量是不符合的<br><img src="https://s2.loli.net/2021/12/04/4i8zDE7dbwIUR5W.png"><br><img src="https://s2.loli.net/2021/12/04/PwFMJued7z84WO5.png"><br><img src="https://s2.loli.net/2021/12/04/FzBERdGomqJH2IC.png"><br><img src="https://s2.loli.net/2021/12/04/p4fXvQy7GWZ1BYg.png"><br>验证第二条acl：<br>只允许主机1 访问web 服务器：<br><img src="https://s2.loli.net/2021/12/04/RNQ9tCv6lYn7zSc.png"><br>不允许其他主机访问web服务器<br><img src="https://s2.loli.net/2021/12/04/VvDMK2JIXtGof4a.png"><br>验证第三条acl：<br>只允许回送应答（echo-reply）进入接口，不允许之外的icmp消息进入（例如echo回送消息）即本例中只允许服务器192.168.186.2 ping其他主机，不允许其他主机ping 192.168.186.2<br>路由器10.0.0.2上ping192.168.186.2  <img src="https://s2.loli.net/2021/12/04/vZxBhbHYc4SspEi.png"><br>服务器192.168.186.2上ping其他主机<br><img src="https://s2.loli.net/2021/12/04/LyVo8Qvrgb7dJFa.png"><br>主机10.0.0.3 10.0.0.4上ping192.168.186.2<br><img src="https://s2.loli.net/2021/12/04/k9zvZsgJGbB47Om.png"><br>以上的编号acl改为命名acl：<br>en<br>conf t<br>ip access-list standard do_not_enter<br>permit 192.168.186.1<br>deny 192.168.186.0 0.0.0.255<br>line vty 0 4<br>password liaozuobiao<br>access-class do_not_enter in</p><p>R0:<br>en<br>conf t<br>hostname R0<br>ip access-list extended do_not_enter<br>permit tcp host 10.0.0.2 host 10.0.0.1 established<br>permit tcp 10.0.0.3 0.0.0.0 host 192.168.186.2 eq www<br>permit icmp 10.0.0.4 0.0.0.255 192.168.186.2 0.0.0.0 echo-reply<br>deny ip any any<br>exit<br>int f0/1<br>ip access-group do_not_enter in<br>exit<br>line vty 0 4<br>password yufanglin</p><p>R1:<br>en<br>conf t<br>hostname R1<br>line vty 0 4<br>password liaozuobiao<br>exit<br>ip route 0.0.0.0 0.0.0.0 10.0.0.1<br><img src="https://s2.loli.net/2021/12/04/74gCFwYl9avGofy.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> 扩展acl控制列表 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>ACL访问控制列表</title>
+      <link href="/2021/12/04/%EF%81%ACACL%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/"/>
+      <url>/2021/12/04/%EF%81%ACACL%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8/</url>
+      
+        <content type="html"><![CDATA[<pre><code>         ACL访问控制列表</code></pre><p><img src="https://s2.loli.net/2021/12/04/Z1B4LoTica5F9rW.png"><br>标准acl限制对路由器vty的访问：<br>en<br>conf t<br>access-list 1 permit 192.168.186.1<br>access-list 1 deny 192.168.186.0 0.0.0.255<br>line vty 0 4<br>password liaozuobiao<br>access-class 1 in//标准acl应用在vty上，若是out则唯一例外地把列表源ip当作目的ip对待<br>在主机1上telnet  <img src="https://s2.loli.net/2021/12/04/VcaF6KZHm5ko7Nd.png"><br>在主机0上telnet  <img src="https://s2.loli.net/2021/12/04/uDh6oCiRASsr3k5.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cisco </tag>
+            
+            <tag> ACL访问控制列表 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>HDLC/PPP</title>
+      <link href="/2021/12/04/HDLC-PPP/"/>
+      <url>/2021/12/04/HDLC-PPP/</url>
+      
+        <content type="html"><![CDATA[<pre><code>     HDLC/PPP</code></pre><p><img src="https://s2.loli.net/2021/12/04/x2YT8rES1wXRfGm.png"><br>HDLC为默认封装。<br>若配置为其他协议封转后，想使用hdlc，可以用在接口配置模式<br>encapsulation hdlc //封装hdlc高级数据链路控制协议<br>keepalive 10 //设置轮询时间间隔  <img src="https://s2.loli.net/2021/12/04/gbymphPnsMv2TIL.png"><br>ppp封装pap认证：<br>R0: //服务端<br>en<br>conf t<br>hostname R0     //配置路由器名称<br>username R1 password cisco //配置本地用户，用户名称最好为对方路由器名称<br>int s0/0/0<br>encapsulation ppp    //封装ppp协议<br>ppp authentication pap //ppp验证为pap协议</p><p>R1: //客户端<br>en<br>conf t<br>hostname R1<br>int s0/0/0<br>encap ppp //封装ppp协议<br>ppp pap sent-username R1 password cisco //客户端提供服务端用于验证的用户名和密码</p><p>结果为：两者通过验证，可以互相ping通<br><img src="https://s2.loli.net/2021/12/04/MLsPQEIt2guSOnx.png"><br><img src="https://s2.loli.net/2021/12/04/c576Ja4DdQjXARB.png"><br>ppp封装chap认证：<br>chap:<br>R0:<br>en<br>conf t<br>hostname R0<br>username R1 password cisco //对端主机名作本地用户名<br>int s0/0/0<br>encap ppp<br>ppp authentication chap  //ppp验证为chap协议</p><p>R1:<br>en<br>conf t<br>hostname R1<br>username R0 password cisco //对端主机名作本地用户名<br>int s0/0/0<br>encap ppp<br>ppp authentication chap //ppp验证为chap协议<br>调试结果：<br><img src="https://s2.loli.net/2021/12/04/qImQnXbKGjLJ9VF.png"><br><img src="https://s2.loli.net/2021/12/04/CreLn5lf3BEQtF2.png"><br><img src="https://s2.loli.net/2021/12/04/trhZSYpEsmn7av9.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> HDLC/PPP </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>NAT/NAPT</title>
+      <link href="/2021/12/04/NAT-NAPT/"/>
+      <url>/2021/12/04/NAT-NAPT/</url>
+      
+        <content type="html"><![CDATA[<p>   NAT/NAPT</p><p><img src="https://s2.loli.net/2021/12/04/cDnHbuJ8Z435wyU.png" alt=" "><br>配置：<br>en<br>conf t<br>ip nat inside source static 192.168.186.254 202.0.0.3//定义nat静态转换<br>int f0/0<br>ip nat inside //在连接到内部的接口上指定inside<br>int f0/1<br>ip nat outside //在连接到外部的接口上指定outside<br>exit<br>access-list 1 deny 192.168.186.254 //配置acl访问控制列表<br>access-list 1 permit 192.168.186.0 0.0.0.255<br>ip nat pool nat_pool1 202.0.0.4 202.0.0.5 netmask 255.255.255.0 //定义地址池<br>ip nat inside source list 1 pool nat_pool1 overload //定义napt动态转换，若是nat无需overload<br>int f0/0<br>ip nat inside<br>int f0/1<br>ip nat outside</p><p>调试：<br>在internet上的一台主机ping 内部服务器的内部全局地址202.0.0.3 <img src="https://s2.loli.net/2021/12/04/Wdiu83bOGYZcIh4.png" alt=" "><br>如果是ping 202.0.0.4  <img src="https://s2.loli.net/2021/12/04/pYKkFuWZfLwaeCm.png" alt=" "><br>发现不能ping通，原因是如果不是静态NAT，外部无法主动发起对内部主机的通信<br>主机0 ping 外部主机则能够ping 通<br><img src="https://s2.loli.net/2021/12/04/FGRdhxglqvkbN79.png" alt=" "><br>并且可用packet tracer的功能查看转换过程：<img src="https://s2.loli.net/2021/12/04/9DCQIlsThwMJpa6.png"><br>使用 show ip nat translation 查看动态条目 <img src="https://s2.loli.net/2021/12/04/GkAFlfHzZI2p8oO.png"><br>使用show ip nat statistics 查看地址转换统计信息  <img src="https://s2.loli.net/2021/12/04/qcWp3JRHMxab9nK.png"><br>另外，可以用 clear ip nat translation */inside/outside清除所有动态或指定条目<br>下面是debug调试：<img src="https://s2.loli.net/2021/12/04/w7WY9A4DylMpO8U.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> NAT/NAPT </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>DHCP</title>
+      <link href="/2021/12/04/DHCP/"/>
+      <url>/2021/12/04/DHCP/</url>
+      
+        <content type="html"><![CDATA[<pre><code>      DHCP</code></pre><p><img src="https://s2.loli.net/2021/12/04/3ZR4pkywtl7amCD.png" alt=" "><br>配置如下：<br>en<br>conf t<br>service dhcp    //启动dhcp服务器特性<br>ip dhcp pool pool1    //创建一个地址池<br>network 192.168.186.0 /24    //指定要分配给客户端的IP地址范围<br>dns-server 192.168.186.253    //将dns服务器地址分配给客户端<br>netbios-name-server 192.168.186.253    //将wins服务器地址分配给客户端<br>default-router 192.168.186.1    //将默认网关分配给客户端<br>lease 6    //设置租赁期<br>import all        //将为更高级别服务器导入的dhcp选项 即将isp的dhcp服务器选项导入<br>exit<br>ip dhcp ping timeout 600  //设置服务器测试其地址池地址是否正在使用的等待应答时间<br>ip dhcp excluded-address 192.168.186.1    //设置排除地址范围<br>ip dhcp excluded-address 192.168.186.253 192.168.186.254<br>int f0/0<br>ip address 192.168.186.1 255.255.255.0<br>no shut<br>end<br>调试和实验结果：xp设置为自动获取ip地址,使用ipconfig/release 然后用ipconfig/renew<br>再用 ipconfig/all<br><img src="https://s2.loli.net/2021/12/04/v4L7xfc8gAiEpGN.png" alt=" "><br><img src="https://s2.loli.net/2021/12/04/2bgYyeNjZJa3TsM.png" alt=" "><br>开启dns服务器（在VMware虚拟机中的Windows Server 2003系统）<br><img src="https://s2.loli.net/2021/12/04/lArMhiOSBd34wXC.png" alt=" "><br><img src="https://s2.loli.net/2021/12/04/ZpgOLabeTv1Dyfr.png" alt=" "><br>发现获取的dns服务器地址 能够解析<a href="http://www.liaozuobiao.com/">www.liaozuobiao.com</a><br>可以用clear ip dhcp binding 192.168.186.3 清除已分配的客户端地址，使其可以被其他设置为自动获取ip的暂无ip地址的客户端自动获取</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cisco </tag>
+            
+            <tag> DHCP </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>单臂路由</title>
+      <link href="/2021/12/04/%E5%8D%95%E8%87%82%E8%B7%AF%E7%94%B1/"/>
+      <url>/2021/12/04/%E5%8D%95%E8%87%82%E8%B7%AF%E7%94%B1/</url>
+      
+        <content type="html"><![CDATA[<pre><code> 单臂路由</code></pre><p>  <img src="https://s2.loli.net/2021/12/04/ClGgZhvYWqsyX9J.png" alt=" "><br>交换机:<br>en<br>conf t<br>int vlan 1<br>ip address 192.168.186.2 255.255.255.0  //设置管理地址<br>no shut<br>exit<br>ip default-gateway 192.168.186.1    //设置默认网关<br>int f0/1<br>switchport mode access<br>switchport access vlan 2<br>int f0/2<br>switchport mode access<br>switchport access vlan 3<br>int f0/3<br>switchport mode trunk    //设置端口模式为vlan中继<br>路由器:<br>en<br>conf t<br>int f0/1<br>ip address 192.168.186.1 255.255.255.0<br>no shut<br>int f0/1.1    //配置子接口<br>encapsulation dot1q 2    //封装802.1q协议 并设置与子接口相关联的vlan号<br>ip address 192.168.187.10 255.255.255.0    //设置子接口ip地址<br>int f0/1.2<br>encapsulation dot1q 3<br>ip address 192.168.188.10 255.255.255.0<br>int f0/0<br>ip address 10.1.1.1 255.255.255.0<br>no shut<br>调试结果：从主机0 ping 主机1<br><img src="https://s2.loli.net/2021/12/04/kOYWFo39rxhGXRE.png" alt=" "><br><img src="https://s2.loli.net/2021/12/04/BFITl86Eot9YZ3d.png" alt=" "><br>发现能够ping通，再从主机2 ping ip地址192.168.186.1即交换机的管理地址<br><img src="https://s2.loli.net/2021/12/04/2HT7eQiIVSxqacO.png" alt=" "><br>发现可以ping通 所以在交换机上可以配置 telnet 或ssh登录，主机2充当管理角色，详见telnet登录配置。下面H3C路由器部分 配置：<br>int f0/1<br>ip address 192.168.186.1 24<br>int f0/1.1<br>ip address 192.168.187.10 24<br>vlan-type dot1q vid 2    //封装802.1q协议 并设置与子接口相关联的vlan号</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> 单臂路由 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>VLAN和聚合</title>
+      <link href="/2021/12/04/VLAN%E5%92%8C%E8%81%9A%E5%90%88/"/>
+      <url>/2021/12/04/VLAN%E5%92%8C%E8%81%9A%E5%90%88/</url>
+      
+        <content type="html"><![CDATA[<pre><code>       VLAN和聚合 gns3模拟</code></pre><p><img src="https://s2.loli.net/2021/12/04/ATqPlQrB1Cu5cUf.png" alt=" "><br>R3：<br>en<br>conf t<br>no ip routing<br>int f0/0<br>ip address 192.168.186.1 255.255.255.0<br>no shut</p><p>R4：<br>en<br>conf t<br>no ip routing<br>int f0/0<br>ip address 192.168.186.2 255.255.255.0<br>no shut</p><p>R5：<br>en<br>conf t<br>no ip routing<br>int f0/0<br>ip address 192.168.186.3 255.255.255.0<br>no shut</p><p>R6<br>en<br>conf t<br>no ip routing<br>int f0/0<br>ip address 192.168.186.4 255.255.255.0<br>no shut</p><p>SW1：<br>en<br>vlan database<br>vtp server        //vtp sever模式<br>vtp domain VtpSev        //域名<br>vtp password liaozuobiao    //密钥<br>vtp pruning        //启动修剪<br>vlan 10    //<br>vlan 20    //创建vlan<br>exit<br>conf t<br>int f0/0<br>switchport mode access        //接入模式<br>switchport access vlan 10    //将端口分配给vlan10<br>int f0/1<br>switchport mode access<br>switchport access vlan 20<br>int range f0/11 - 15<br>switchport mode trunk    //中继模式<br>switchport trunk allowed vlan all    //允许所有vlan通过<br>switchport trunk native vlan 1        //设置本地vlan</p><p>exit<br>int range f0/11 - 15<br>channel-protocol pagp        //pagp聚合协议<br>channel-group 1 mode on    //配置端口聚合为打开模式<br>或（gns3不能配置）<br>exit<br>lacp system-priority 100        //设置系统优先级<br>int range f0/11 - 15<br>channel-protocol lacp    //lacp聚合协议<br>channel-group 1 mode active        //启动端口聚合为积极模式<br>lacp port-priority 100    //端口优先级</p><p>SW2：<br>en<br>vlan database<br>vtp client<br>vtp password liaozuobiao<br>exit<br>conf t<br>int f0/0<br>switchport mode access<br>switchport access vlan 10<br>int f0/1<br>switchport mode access<br>switchport access vlan 20<br>int range f0/11 - 15<br>switchport mode trunk<br>switchport trunk allowed vlan all<br>switchport trunk native vlan 1</p><p>exit<br>int range f0/11 - 15<br>channel-protocol pagp<br>channel-group 1 mode on<br>或<br>exit<br>lacp system-priority 100<br>int range f0/11 - 15<br>channel-protocol lacp<br>channel-group 1 mode active<br>lacp port-priority 100</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cisco </tag>
+            
+            <tag> VLAN和聚合 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>端口安全特性</title>
+      <link href="/2021/12/04/%E7%AB%AF%E5%8F%A3%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/"/>
+      <url>/2021/12/04/%E7%AB%AF%E5%8F%A3%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/</url>
+      
+        <content type="html"><![CDATA[<pre><code>      端口安全特性 Packet tracer 模拟</code></pre><p><img src="https://s2.loli.net/2021/12/04/ayKq7r4QRfdEUuH.png" alt=" "><br>配置命令：<br>en<br>conf t<br>int f0/1<br>switchport mode access //定义为主机访问端口，注意在trunk、EtherChannel端口上不起作用<br>switchport access vlan 1<br>switchport port-security    //启动端口安全特性，这步很关键， Don’t forget，因为默认是禁用的<br>switchport port-security maximum 1 //设置接口关联最大设备数<br>switchport port-security violation shutdown //设置违反安全性规则时接口应该干什么<br>switchport port-security mac-address sticky //设置粘性学习<br>调试：<img src="https://s2.loli.net/2021/12/04/8cj5sFnRiWHvGfm.png" alt=" "></p><p>从主机0 ping 主机1，发现能够ping通<br>然后将f0/1断开，接至主机2（未连接），如图：<br>主机2 ping 主机1，不能够ping通，且端口f0/1自动关闭，要恢复的话先shutdown 再no shut</p><p><img src="https://s2.loli.net/2021/12/04/zkdF4RJUoBetCic.png" alt=" "><br><img src="https://s2.loli.net/2021/12/04/JqCw53InuZljm4N.png" alt=" "><br><img src="https://s2.loli.net/2021/12/04/d5BLjWDNhOSHRQi.png" alt=" "><br><img src="https://s2.loli.net/2021/12/04/LA93VIyUiTRGDqj.png" alt=" "><br><img src="https://s2.loli.net/2021/12/04/wG7T1WqHRa2idcU.png" alt=" "></p><p>发现端口恢复至开启状态。<br>当违反端口安全性时，可以在配置模式下使用以下命令重新设置接口：<br>errdisable recovery cause psecure-vialotion</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cisco </tag>
+            
+            <tag> 端口安全特性 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Telnet和ssh登录</title>
+      <link href="/2021/12/04/Telnet%E5%92%8Cssh%E7%99%BB%E5%BD%95/"/>
+      <url>/2021/12/04/Telnet%E5%92%8Cssh%E7%99%BB%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[<pre><code>           Telnet和ssh登录     GNS3模拟</code></pre><p><img src="https://s2.loli.net/2021/12/04/Gu4LO75h2bRn3zD.png" alt=" "></p><p>1&gt;Telnet<br>en<br>conf t<br>int f0/0<br>ip address 192.168.186.1 255.255.255.0<br>no shut<br>exit<br>enable password 123456789        //设置特权exec密码<br>service password-encryption    //对密码进行加密</p><p>line vty 0 4<br>password 123456789    //虚拟终端密码<br>login    //允许登录<br>或<br>username liaozuobiao password yufanglin        //本地用户名数据库设置密码<br>line vty 0 4<br>login local</p><p>2&gt;、ssh<br>en<br>conf t<br>int f0/0<br>ip address 192.168.186.1 255.255.255.0<br>no shut<br>exit<br>username liaozuobiao secret yufanglin<br>hostname R1        //主机名 在ios设备上标注RSA密钥对时需要hostname和domain-name<br>ip domain-name liaozuobiao.com        //域名<br>ip ssh version 2<br>crypto key generate rsa general-keys modulus 1024     //密钥类型和长度<br>line vty 0 4<br>login local    //本地用户名数据库<br>transport input ssh        //使用ssh作为登录程序<br>exit</p><p>调试结果：<br>在R2这个主机上键入命令<br><img src="https://s2.loli.net/2021/12/04/DaZqub7e3Qk9jRJ.png" alt=" "></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> cisco </tag>
+            
+            <tag> Telnet和ssh登录 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>华为BGP基础配置</title>
       <link href="/2021/12/01/%E5%8D%8E%E4%B8%BABGP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/"/>
       <url>/2021/12/01/%E5%8D%8E%E4%B8%BABGP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/</url>
       
         <content type="html"><![CDATA[<pre><code>BGP基础配置</code></pre><p>1.ebgp邻居之间传路由修改下一条<br>2.ibgp邻居之间传路由不修改下一条<br>3.R4上看到1.1.1.1的路由吓一跳是12.1.1.1不可达，无效<br>4.BGP只会把最优路径传给邻居，所以R5上收不到路由<br>5.解决方案：<br>配置如下命令，使得R2将路由传递给ibgp邻居R4时，修改下一跳为本地更新源2.2.2.2<br>peer 4.4.4.4 next-hop-local<br>6.此时R4收到1.1.1.1的路由下一跳为2.2.2.2并不是直连路由，需要进行递归查表<br>2.2.2.2的下一跳为34.1.1.3<br>在FIB表中，可以直接看到递归的结果<br>display fib<br>7.当1.1.1.1访问5.5.5.5时<br>数据包到达R3之后，由于R3无bgp，无路由，会丢包。<br>这个现象叫做路由黑洞。<br>解决方案：<br>1.全互联<br>ibgp为了保证无环，和减少路由的更新，有水平分割的原则：<br>从一个ibgp邻居收到的路由，不会发送给其他ibgp邻居。<br>所以R2-R3,R3-R4,R2-R4需要两两起邻居<br>2.路由引入<br>需要在R2和R4的ospf中引入BGP<br>import-route bgp<br>3.MPLS（后面学）<br>#<br>bgp 200       \启用BGP，AS号为200<br> router-id 4.4.4.4    \配置BGP的RID<br> peer 2.2.2.2 as-number 200     \指定邻居2.2.2.2的AS为200，IBGP。<br> peer 2.2.2.2 connect-interface LoopBack0<br>  \指定与邻居2.2.2.2通信的更新源为环回口0<br> peer 3.3.3.3 as-number 200<br> peer 3.3.3.3 connect-interface LoopBack0<br> peer 50.1.1.1 as-number 300     \指定邻居50.1.1.1的AS为300，EBGP<br> peer 50.1.1.1 ebgp-max-hop 2    \由于使用环回口起EBGP，需要修改跳数。<br> peer 50.1.1.1 connect-interface LoopBack40   \指定更新源。<br> #<br> ipv4-family unicast   \进入IPv4地址族（默认开启）<br>  undo synchronization    \同步检查，默认是关闭的<br>  peer 2.2.2.2 enable    \激活2.2.2.2邻居，（默认激活）<br>  peer 2.2.2.2 next-hop-local      \修改发给2.2.2.2的路由下一跳为本地<br>  peer 3.3.3.3 enable<br>  peer 3.3.3.3 next-hop-local<br>  peer 50.1.1.1 enable</p>]]></content>
       
+      
+      <categories>
+          
+          <category> 华为 </category>
+          
+      </categories>
       
       
         <tags>
@@ -32,6 +443,12 @@
         <content type="html"><![CDATA[<pre><code>ospf总结</code></pre><p>Packet types<br>    Hello：发现、建立和维护邻居关系<br>    DBD：链路状态数据库描述报文，选举主从／LSA的头部信息<br>    LSR：请求报文，索要LSA<br>    LSU：给LSA<br>    LS Ack：确认<br>Neighbor relationship<br>    Down<br>    Attempt：NBMA网络中出现<br>Init：交互hello报文<br>    必要条件：1、hello时间2、area ID 3、认证 4、特殊区域标识<br>    2-way：选举DR和BDR<br>        选举规则：    0、谁先启动谁是DR<br>1、优先级  默认为1 、0表示弃权、越大越优<br>                    2、router-id  越大越优<br>            router-id的选举规则<br>1、手动指定<br>2、活跃的环回口中IP地址最大的<br>3、活跃的物理接口中IP地址最大的<br>    exstart：交互DBD的第一组报文，选举主从，以主设备的序列号开始同步DBD报文<br>        I：初始化，第一个DBD报文此位 置1<br>        M：更多，后续如果还有更多DBD报文则此位 置 1<br>        MS：master，主设备此位 置1<br>        主从选举规则：router-id越大越优<br>    exchange：交互剩余的DBD<br>    loading：交互LSR和LSU，发送ACK<br>    full：<br>LSA types(1,2,3,4,5,7,8,9)<br>    产生者，作用，通告范围<br>    1:all，直连接口的链路信息，本区域<br>    2:DR，MA网络的掩码，本区域<br>    3:ABR，1、2的汇总信息，AS<br>    4:ASBR区域的ABR，描述ASBR的位置，AS<br>    5:ASBR，外部路由，AS<br>    7:NSSA区域的ASBR，外部路由，NSSA区域<br>    8:IPv6中的1类的作用<br>    9:IPv6中的2类的作用<br>Route types<br>    O、O IA、OE 1、OE 2、ON 1、ON 2<br>Network types<br>    P2P<br>    P2MP<br>    BMA<br>    NBMA<br>    P2MP NB<br>    LOOPBACK  不管环回口的掩码是多少位，传递出去后全都是／32<br>area types：backbone、nomal、stub、NSSA<br>    末梢：过滤4、5类LSA，自动下发3类默认路由，不允许引入外部路由<br>    完全末梢：过滤3、4、5类LSA，自动下发3类默认路由，不允许引入外部路由<br>    非完全完全末梢NSSA：过滤4、5类LSA，不会自动下发默认路由，需要使用default-information-originate下发7类默认路由，允许引入外部路由<br>    完全非完全完全末梢：过滤3、4、5类LSA，自动下发3类默认路由，允许引入外部路由<br>router types：internal router、ABR、ASBR<br>Virtual-link<br>    一条属于area 0的逻辑线路<br>Authentication<br>    空认证<br>    明文认证<br>    MD5消息摘要认证<br>    接口下认证<br>    区域认证</p>]]></content>
       
       
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -52,6 +469,12 @@
       
         <content type="html"><![CDATA[<pre><code>CiscoDHCP配置</code></pre><p>Router(config)#service dhcp \开启dhcp服务，默认开启</p><p> Router(config)#no ip dhcp conflict logging \检测到地址冲突会记录到conflict，一旦记录在conflict里的ip地址就不会再分配，命令取消地址冲突记录日志，（由于可能手工配置了IP，dhcp在分配地址前会使用arp或ping的方式测试ip是否在存在，如果在用就排除，如果没用才会分配）<br>Router(config)#ip dhcp pool vlan10 \创建dhcp地址池，名字为vlan10<br>Router(dhcp-config)#network 192.168.1.0 /24 \地址范围<br>Router(dhcp-config)#default-router 192.168.1.1 \分配的网关<br>Router(dhcp-config)#dns-server 8.8.8.8 4.4.4.4 1.1.1.1 \分配的dns<br>Router(dhcp-config)#lease 1 16 30 \租用期顺序是天、时、分，这样设置意思是1天16分30秒，默认是1天<br>Router(config)#ip dhcp excluded-address 192.168.1.1 \排除192.168.1.1地址，不被分配<br>Router(config)#ip dhcp excluded-address 192.168.1.10 192.168.1.20 \排除地址192.168.1.10-192.168.1.20的地址，不被分配<br>Router(config)#ip dhcp ping packets 3 \DHCP服务器在分配一个地址之前，先对这个地址PING一下（不配置默认是PING两个包）,用来确定这个地址是否已被其他主机所用。</p><p>需要给MAC地址：aabb.cc00.0600分配特定的地址，需要另外创建地址池：<br>Router(config)#ip dhcp pool pc2</p><p>Router(dhcp-config)# host 192.168.2.188 255.255.255.0 \指定分配的ip地址</p><p> Router(dhcp-config)# client-identifier aabb.cc00.0600 \为指定的aabb.cc00.0600 MAC的主机分配地址</p><p>Router(dhcp-config)# default-router 192.168.2.1  \分配的网关</p><p>Router(config-if)#ip helper-address 10.1.1.1 \dhcp代理，地址指向dhcp服务器的地址，在需要向dhcp获取地址的接口下配置，前提是要和dhcp 10.1.1.1服务器能通</p>]]></content>
       
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
       
       
         <tags>
@@ -74,6 +497,12 @@
         <content type="html"><![CDATA[<p>   帧中继配置</p><p>R1:<br>interface Serial3/0<br> ip address 192.168.1.1 255.255.255.0<br> encapsulation frame-relay<br> serial restart-delay 0<br> frame-relay map ip 192.168.1.2 102<br> frame-relay map ip 192.168.1.3 103<br> no frame-relay inverse-arp<br>R2:<br>interface Serial3/0<br> ip address 192.168.1.2 255.255.255.0<br> encapsulation frame-relay<br> serial restart-delay 0<br> frame-relay map ip 192.168.1.1 201<br> no frame-relay inverse-arp<br>R3：<br>interface Serial3/0<br> ip address 192.168.1.3 255.255.255.0<br> encapsulation frame-relay<br> serial restart-delay 0<br> frame-relay map ip 192.168.1.1 301<br> no frame-relay inverse-arp</p>]]></content>
       
       
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -94,6 +523,12 @@
       
         <content type="html"><![CDATA[<p>   组播配置</p><p>ip multicast-routing  \在路由上开启组播路由<br> ip pim sparse-mode \在接口下开启plm稀疏模式<br>ip igmp join-group 239.1.1.1 \接口需要侦听某个组播组<br>ip pim rp-address 2.2.2.2 override \定义rp后面加override优先最优路径<br>ip pim spt-threshold infinity \不让共享树到源树自动切换<br> ip pim send-rp-announce loopback 0 scope 5 \在rp上配置自动映射rp后面接跳数为5<br>ip pim send-rp-discovery loopback 0 scope 5 \在备用rp上配置discovery的路由器充当rp-map<br>ip pim autorp listener \原因是因为auto-rp的两个组播地址224.0.1.39和224.0.1.40只可以在dense-mode下传输，解决这个问题的<br>ip pim rp-candidate loopback 0 \开启BSR自举路由器协议c-RP<br> ip pim bsr-candidate  loopback 0 \开启BSR自举c-BSR</p>]]></content>
       
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
       
       
         <tags>
@@ -116,6 +551,12 @@
         <content type="html"><![CDATA[<p>  二层复习<br> VLAN<br>svi接口不up起不来的原因有：<br>1，没有先创建该vlan，int vlan 10这跳命令不会自动创建vlan的<br>2，要有活跃的物理up接口属于此vlan</p><p>trunk有两种协议<br>ISL—思科私有协议 是基于芯片模拟器是用不了行不通的，区别ISL：不修改原来的帧，只是做封装<br>802.1Q–国际化公有协议 802.1Q：帧中插入tag，修改了原有的帧的格式<br>交换机本尊vlan默认是1，可以更改但一定要双方一样，不然会造成vlan跳跃攻击，相同vlan ping不通。<br>修改native vlan     switchport trunk native vlan 2 \修改本尊vlan为vlan2<br>设置允许某个vlan通行 switchport trunk allowd vlan 10 \只允许vlan10通行，如果想要全部通行的话后面加all 增加在allowd后面加anb移除remove </p><p>VTP的三种模式：<br>1.Server服务器<br>可创建删除、修改vlan信息<br>同步vlan信息给其他server或client</p><p>2.Client客户端<br>不能创建删除和修改vlan信息<br>只能通过同步学习vlan信息</p><p>3.Transparent透明<br>能创建删除、修改vlan，但不会学习或同步vlan信息</p><p>同步<br>基于域进行管理，相同域才能同步vlan<br>VTP Server和clients通过最高的修订号来同步数据库；<br>VTP协议每隔5分钟发送一次VTP通告或者有变化时发生</p><p>想要vtp修订版本号清零可以调成通明模式后再调回客户端模式  </p><p>链路聚合<br>链路捆绑必须要有一方的主动模式，两个被动模式是起不来的<br>链路聚合可以把八个端口捆在一起<br>Show etherchannel summary \查看链路聚合有没有成功              </p><p>stp选举规则<br>选举根桥<br>桥ID 越小越优<br>选举根端口<br>mac小的优<br>在所有非根桥中选举一个离根最近的接口<br>Cost<br>sender 桥ID<br>sender 端口ID<br>选举指定端口<br>在所有链路上选举一个离根最近的接口<br>同根端口的选举</p><p>接口状态<br>down：死了<br>blocking:只接收BPDU，不发出BPDU，不学习mac，不转发数据<br>切换时间：20s<br>listening:接收和转发BPDU，不学习mac，不转发数据<br>切换时间：15s<br>learning:接收和转发BPDU，学习mac，不转发数据<br>切换时间：15s<br>forwarding:接收和转发BPDU，学习mac，转发数据</p>]]></content>
       
       
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -134,8 +575,14 @@
       <link href="/2021/12/01/asa%E5%A4%9A%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/"/>
       <url>/2021/12/01/asa%E5%A4%9A%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/</url>
       
-        <content type="html"><![CDATA[<pre><code>防火墙多模式ASA配置</code></pre><p>(config)#Mode multiple \单模式转换到多模式，配置会被清空<br>(config)#show firewall \查看防火墙类型，router为路由三层，transparent为交换二层<br>(config)#show mode \查看防火墙模式，multiple为多模式，single为单模式<br>(config)#delete flash:/admin.cfg \删除flash:里残余的.cfg文件<br>(config)#admin-context admin \定义管理类型的子防火墙名字为“admin”<br>    (config)# context admin \创建子防火墙<br>(config-ctx)#allocate-interface Ethernet0/0<br>(config-ctx)#allocate-interface Ethernet0/1.3<br>(config-ctx)#allocate-interface Ethernet0/1.4 \关联物理或逻辑接口到子防火墙<br>(config-ctx)#config-url flash:/admin.cfg \指派子防火墙配置文件备份路径<br>  (config)#context Vir \创建子防火墙vir<br>(config-ctx)#allocate-interface Ethernet0/0 outside<br>(config-ctx)#allocate-interface Ethernet0/1.4 inside<br>(config-ctx)#allocate-interface Ethernet0/1.5 dmz \可以为关联的物理或逻辑接口指派一个名字，便于识别<br>(config-ctx)#config-url flash:/Vir.cfg \指派子防火墙配置文件备份路径<br>(config)# changeto context admin \使用changeto-context&lt;子防火墙名&gt;切换到子防火墙配置模式<br>子防火墙配置模式:<br>admin(config)# interface e0/0<br>admin(config-if)# nameif Outside<br>admin(config-if)# ip address 202.100.1.10 255.255.255.0<br>admin(config-if)# interface e0/1.3<br>admin(config-if)# nameif DMZ<br>admin(config-if)# security-level 50<br>admin(config-if)# ip address 172.16.1.10 255.255.255.0<br>admin(config-if)# interface e0/1.4<br>admin(config-if)# nameif Inside<br>admin(config-if)# ip address 192.168.1.10 255.255.255.0<br>admin(config)# changeto context Vir \切换到vir子防火墙<br>子防火墙配置模式:<br>Vir(config)# interface outside<br>Vir(config-if)# nameif Outside<br>Vir(config-if)# ip address 202.100.1.20 255.255.255.0<br>Vir(config-if)# interface inside<br>Vir(config-if)# nameif Inside<br>Vir(config-if)# ip address 192.168.1.20 255.255.255.0<br>Vir(config-if)# interface dmz<br>Vir(config-if)# nameif DMZ<br>Vir(config-if)# security-level 50<br>Vir(config-if)# ip address 10.1.1.20 255.255.255.0<br>（Vir）子防火墙配置模式:<br>object network DMZ-to-Outside<br>host 10.1.1.1<br>object network DMZ-to-Outside<br>nat (DMZ,Outside) static 202.100.1.101<br>access-list out permit tcp any host 10.1.1.1 eq 23<br>access-group out in in outsid</p><p>Outside路由器telnet测试:<br>outside#telnet 202.100.1.101<br>Trying 202.100.1.101 … Open<br>User Access Verification<br>Password:<br>Vir.dmz&gt;</p><p>（admin）子防火墙配置模式:<br>object network Inside.Network<br>subnet 192.168.1.0 255.255.255.0<br>nat (Inside,Outside) dynamic interface</p><p>Inside路由器telnet测试:<br>inside#telnet 202.100.1.1<br>Trying 202.100.1.1 …<br>% Connection timed out; remote host not responding<br>外什么不通，下面是解决方法<br>解决方法:为共享Inside接口在每一个context里<br>指派不同的MAC:<br>两种为接口指派MAC地址的方法:<br>1.手动为每一个接口指派MAC地址<br>2.系统自动为每一个接口产生MAC地址</p><pre><code>手动配置mac地址</code></pre><p>子防火墙配置模式:<br>admin(config)# inter e0/1.4<br>admin(config-if)# mac-address 0001.0001.0001 \手动配置mac地址<br>子防火墙配置模式:<br>Vir(config)# interface inside<br>Vir(config-if)# mac-address 0001.0002.0001</p><p>inside#show arp<br>Protocol Address Age (min) Hardware Addr Type Interface<br>Internet 192.168.1.10 0 0001.0001.0001 ARPA Ethernet0/1<br>Internet 192.168.1.20 0 0001.0002.0001 ARPA Ethernet0/1<br>inside#telnet 202.100.1.1 \（通）问题解决</p><p>系统自动产生MAC地址<br>(config)# mac-address auto \让他自动产生mac地址</p><p>inside#sh arp<br>Protocol Address Age (min) Hardware Addr Type Interface<br>Internet 192.168.1.10 0 1201.0004.0200 ARPA Ethernet0/1<br>Internet 192.168.1..20 0 1201.0004.0300 ARPA Ethernet0/1 </p><p>inside#telnet 202.100.1.1 \（通）问题解决<br>Changeto system \回到防火墙初始地</p>]]></content>
+        <content type="html"><![CDATA[<pre><code>防火墙多模式ASA配置</code></pre><p><img src="https://s2.loli.net/2021/12/04/gbkDPv6CAlep2HL.png" alt=" "><br>(config)#Mode multiple \单模式转换到多模式，配置会被清空<br>(config)#show firewall \查看防火墙类型，router为路由三层，transparent为交换二层<br>(config)#show mode \查看防火墙模式，multiple为多模式，single为单模式<br>(config)#delete flash:/admin.cfg \删除flash:里残余的.cfg文件<br>(config)#admin-context admin \定义管理类型的子防火墙名字为“admin”<br>    (config)# context admin \创建子防火墙<br>(config-ctx)#allocate-interface Ethernet0/0<br>(config-ctx)#allocate-interface Ethernet0/1.3<br>(config-ctx)#allocate-interface Ethernet0/1.4 \关联物理或逻辑接口到子防火墙<br>(config-ctx)#config-url flash:/admin.cfg \指派子防火墙配置文件备份路径<br>  (config)#context Vir \创建子防火墙vir<br>(config-ctx)#allocate-interface Ethernet0/0 outside<br>(config-ctx)#allocate-interface Ethernet0/1.4 inside<br>(config-ctx)#allocate-interface Ethernet0/1.5 dmz \可以为关联的物理或逻辑接口指派一个名字，便于识别<br>(config-ctx)#config-url flash:/Vir.cfg \指派子防火墙配置文件备份路径<br>(config)# changeto context admin \使用changeto-context&lt;子防火墙名&gt;切换到子防火墙配置模式<br>子防火墙配置模式:<br>admin(config)# interface e0/0<br>admin(config-if)# nameif Outside<br>admin(config-if)# ip address 202.100.1.10 255.255.255.0<br>admin(config-if)# interface e0/1.3<br>admin(config-if)# nameif DMZ<br>admin(config-if)# security-level 50<br>admin(config-if)# ip address 172.16.1.10 255.255.255.0<br>admin(config-if)# interface e0/1.4<br>admin(config-if)# nameif Inside<br>admin(config-if)# ip address 192.168.1.10 255.255.255.0<br>admin(config)# changeto context Vir \切换到vir子防火墙<br>子防火墙配置模式:<br>Vir(config)# interface outside<br>Vir(config-if)# nameif Outside<br>Vir(config-if)# ip address 202.100.1.20 255.255.255.0<br>Vir(config-if)# interface inside<br>Vir(config-if)# nameif Inside<br>Vir(config-if)# ip address 192.168.1.20 255.255.255.0<br>Vir(config-if)# interface dmz<br>Vir(config-if)# nameif DMZ<br>Vir(config-if)# security-level 50<br>Vir(config-if)# ip address 10.1.1.20 255.255.255.0<br>（Vir）子防火墙配置模式:<br>object network DMZ-to-Outside<br>host 10.1.1.1<br>object network DMZ-to-Outside<br>nat (DMZ,Outside) static 202.100.1.101<br>access-list out permit tcp any host 10.1.1.1 eq 23<br>access-group out in in outsid</p><p>Outside路由器telnet测试:<br>outside#telnet 202.100.1.101<br>Trying 202.100.1.101 … Open<br>User Access Verification<br>Password:<br>Vir.dmz&gt;</p><p>（admin）子防火墙配置模式:<br>object network Inside.Network<br>subnet 192.168.1.0 255.255.255.0<br>nat (Inside,Outside) dynamic interface</p><p>Inside路由器telnet测试:<br>inside#telnet 202.100.1.1<br>Trying 202.100.1.1 …<br>% Connection timed out; remote host not responding<br>外什么不通，下面是解决方法<br>解决方法:为共享Inside接口在每一个context里<br>指派不同的MAC:<br>两种为接口指派MAC地址的方法:<br>1.手动为每一个接口指派MAC地址<br>2.系统自动为每一个接口产生MAC地址</p><pre><code>手动配置mac地址</code></pre><p>子防火墙配置模式:<br>admin(config)# inter e0/1.4<br>admin(config-if)# mac-address 0001.0001.0001 \手动配置mac地址<br>子防火墙配置模式:<br>Vir(config)# interface inside<br>Vir(config-if)# mac-address 0001.0002.0001</p><p>inside#show arp<br>Protocol Address Age (min) Hardware Addr Type Interface<br>Internet 192.168.1.10 0 0001.0001.0001 ARPA Ethernet0/1<br>Internet 192.168.1.20 0 0001.0002.0001 ARPA Ethernet0/1<br>inside#telnet 202.100.1.1 \（通）问题解决</p><p>系统自动产生MAC地址<br>(config)# mac-address auto \让他自动产生mac地址</p><p>inside#sh arp<br>Protocol Address Age (min) Hardware Addr Type Interface<br>Internet 192.168.1.10 0 1201.0004.0200 ARPA Ethernet0/1<br>Internet 192.168.1..20 0 1201.0004.0300 ARPA Ethernet0/1 </p><p>inside#telnet 202.100.1.1 \（通）问题解决<br>Changeto system \回到防火墙初始地</p>]]></content>
       
+      
+      <categories>
+          
+          <category> Cisco </category>
+          
+      </categories>
       
       
         <tags>
@@ -155,8 +602,14 @@
       <link href="/2021/12/01/%E7%83%AD%E5%A4%87/"/>
       <url>/2021/12/01/%E7%83%AD%E5%A4%87/</url>
       
-        <content type="html"><![CDATA[<p>  热备(hsrp 和 vrrp)</p><p>提高网络的可靠性，实现冗余。将局域网中的一组设备（包括一个master即活动设备，和若干个backup即备份设备）组成一个虚拟路由器，称为一个备份组。<br>要有两台以上的设备。设备共用一个虚拟IP，做为局域网内的网关<br>    注意：交换机的认证字段是DCN，路由器的认证字段是Route（交换机与路由器进行备份时，应注意其认证字段：standby [group] authentication <string> ）<br>HSRP<br>R1_config#int  f0/0<br>R1_config_f0/0#ip address 171.16.6.5 255.255.255.0<br>R1_config_f0/0#standby 1 preempt        （设置抢占模式）<br>R1_config_f0/0#standby 1 ip 171.16.6.100 255.255.255.0         （设置standby ip）<br>R1_config_f0/0#standby 1 trackl s0/1         （跟踪s0/1端口数据）</p><p>R2_config#int  f0/0<br>R2_config_f0/0#ip address 171.16.6.6 255.255.255.0<br>R2_config_f0/0#standby 1 preempt<br>R2_config_f0/0#standby 1 ip 171.16.6.100 255.255.255.0<br>R2_config_f0/0#standby 1 trackl s0/1<br>R2_config_f0/0#standby 1 priority 95     （设置standby优先级）</p><p>VRRP<br>（Router）<br>interface Ethernet1/1.1<br>encapsulation dot1Q 2<br>ip address 100.1.1.5 255.255.255.0<br>vrrp 3 associate 100.1.1.30 255.255.255.0    //配置VRRP 组的虚拟IP<br>vrrp 3 priority 120        //设置在VRRP路由器中使用的热备份优先级<br>vrrp 3 description line1-master        //配置VRRP的描述字符串<br>vrrp 3 authentication line1pwd    //选择一个认证字符串，在备份协议报文交换时用于认证其他同组的路由器。<br>vrrp 3 preempt        //设置抢占方式<br>vrrp 3 timers advertise dsec 15        //设置VRRP的时间参数</p><hr><p>interface Ethernet1/1.2<br>encapsulation dot1Q 3<br>ip address 200.1.1.5 255.255.255.0<br>vrrp 6 associate 200.1.1.30 255.255.255.0<br>vrrp 6 priority 110<br>vrrp 6 description line2-backup<br>vrrp 6 authentication line2pwd<br>vrrp 6 preempt<br>vrrp 6 timers advertise dsec 15<br>（Switch）<br>SW1 (config)#int vlan 1<br>SW1 (Config-if-Vlan1)# ip address 10.1.1.1 255.255.255.0<br>SW1 (config)#router vrrp 1        （创建虚拟路由）<br>SW1 (config-router)# virtual-ip 10.1.1.5     （设置虚拟ip）<br>SW1 (config-router)# int vlan 1         （配置VRRP接口）<br>SW1 (config-router)# enable         （启动该虚拟路由器）</p><p>SW2 (config)#int vlan 1<br>SW2 (Config-if-Vlan1)# ip address 10.1.1.7 255.255.255.0<br>SW2 (config)#router vrrp 1<br>SW2 (config-router)# virtual-ip 10.1.1.5<br>SW2 (config-router)# int vlan 1<br>SW2 (config-router)#priority 95        （设置优先级）<br>SW2 (config-router)# enable</p>]]></content>
+        <content type="html"><![CDATA[<p>  热备(hsrp 和 vrrp)</p><p>提高网络的可靠性，实现冗余。将局域网中的一组设备（包括一个master即活动设备，和若干个backup即备份设备）组成一个虚拟路由器，称为一个备份组。<br>要有两台以上的设备。设备共用一个虚拟IP，做为局域网内的网关<br>    注意：交换机的认证字段是DCN，路由器的认证字段是Route（交换机与路由器进行备份时，应注意其认证字段：standby [group] authentication <string> ）<br>HSRP<br>R1_config#int  f0/0<br>R1_config_f0/0#ip address 171.16.6.5 255.255.255.0<br>R1_config_f0/0#standby 1 preempt        （设置抢占模式）<br>R1_config_f0/0#standby 1 ip 171.16.6.100 255.255.255.0         （设置standby ip）<br>R1_config_f0/0#standby 1 trackl s0/1         （跟踪s0/1端口数据）</string></p><p>R2_config#int  f0/0<br>R2_config_f0/0#ip address 171.16.6.6 255.255.255.0<br>R2_config_f0/0#standby 1 preempt<br>R2_config_f0/0#standby 1 ip 171.16.6.100 255.255.255.0<br>R2_config_f0/0#standby 1 trackl s0/1<br>R2_config_f0/0#standby 1 priority 95     （设置standby优先级）</p><p>VRRP<br>（Router）<br>interface Ethernet1/1.1<br>encapsulation dot1Q 2<br>ip address 100.1.1.5 255.255.255.0<br>vrrp 3 associate 100.1.1.30 255.255.255.0    //配置VRRP 组的虚拟IP<br>vrrp 3 priority 120        //设置在VRRP路由器中使用的热备份优先级<br>vrrp 3 description line1-master        //配置VRRP的描述字符串<br>vrrp 3 authentication line1pwd    //选择一个认证字符串，在备份协议报文交换时用于认证其他同组的路由器。<br>vrrp 3 preempt        //设置抢占方式<br>vrrp 3 timers advertise dsec 15        //设置VRRP的时间参数</p><hr><p>interface Ethernet1/1.2<br>encapsulation dot1Q 3<br>ip address 200.1.1.5 255.255.255.0<br>vrrp 6 associate 200.1.1.30 255.255.255.0<br>vrrp 6 priority 110<br>vrrp 6 description line2-backup<br>vrrp 6 authentication line2pwd<br>vrrp 6 preempt<br>vrrp 6 timers advertise dsec 15<br>（Switch）<br>SW1 (config)#int vlan 1<br>SW1 (Config-if-Vlan1)# ip address 10.1.1.1 255.255.255.0<br>SW1 (config)#router vrrp 1        （创建虚拟路由）<br>SW1 (config-router)# virtual-ip 10.1.1.5     （设置虚拟ip）<br>SW1 (config-router)# int vlan 1         （配置VRRP接口）<br>SW1 (config-router)# enable         （启动该虚拟路由器）</p><p>SW2 (config)#int vlan 1<br>SW2 (Config-if-Vlan1)# ip address 10.1.1.7 255.255.255.0<br>SW2 (config)#router vrrp 1<br>SW2 (config-router)# virtual-ip 10.1.1.5<br>SW2 (config-router)# int vlan 1<br>SW2 (config-router)#priority 95        （设置优先级）<br>SW2 (config-router)# enable</p>]]></content>
       
+      
+      <categories>
+          
+          <category> 神州数码 </category>
+          
+      </categories>
       
       
         <tags>
@@ -179,6 +632,12 @@
         <content type="html"><![CDATA[<p>  DHCP</p><p>路由器需开启DHCP服务（ip  dhcpd  enable）；交换机也需开启DHCP 服务器和中继代理服务（service dhcp），以及配置DHCP中继转发DHCP广播报文（ip  forward-protocol  udp  bootps）,设定中继的DHCP服务器地址（ip  helper-address     IP(DHCP服务器端口地址)）</p><p>R2_config#ip dhcpd enable     （启动DHCP服务）<br>R2_config#ip dhcpd pool vlan10     （定义地址池）<br>R2_config_dhcp#network 192.168.2.64 255.255.255.192     （定义网络号）<br>R2_config_dhcp#default-router 192.168.2.126     （定义默认网关）<br>R2_config_dhcp#dns-server 172.16.1.2     （定义DNS）<br>R2_config_dhcp#range 192.168.2.65 192.168.2.125     （定义地址池范围）<br>R2_config_dhcp#lease 3      （定义地址租期为3天）<br>R2_config#ip dhcpd enable     （启动DHCP服务）<br>R2_config#ip dhcpd pool vlan20     （定义地址池）<br>R2_config_dhcp#network 192.168.2.128 255.255.255.192     （定义网络号）<br>R2_config_dhcp#default-router 192.168.2.190     （定义默认网关）<br>R2_config_dhcp#dns-server 172.16.1.2     （定义DNS）<br>R2_config_dhcp#range 192.168.2.129 192.168.2.189     （定义地址池范围）<br>R2_config_dhcp#lease 3      （定义地址租期为3天）<br>lease infinite            永久租期</p><p>DHCP中继转发：先设定转发指定UDP端口，再指定VLAN端口，再中继到服务器<br>ip dhcp relay information policy drop中继时，配置中继的转发政策为不转发DHCP报文<br>SW1(config)#ip forward-protocol udp bootps    （配置DHCP中继转发DHCP广播报文）<br>SW1(config)#int vlan 10<br>SW1(config-if-vlan10)# ip helper-address 202.192.36.2      （设置中继的DHCP服务器地址）<br>SW1(config)#service DHCP                    （启动DHCP服务或中继代理）</p><p>SW2(config)#ip forward-protocol udp bootps    （配置DHCP中继转发DHCP广播报文）<br>SW2(config)#int vlan 20<br>SW2(config-if-vlan20)# ip helper-address 202.192.37.2      （设置中继的DHCP服务器地址）<br>SW2(config)#service DHCP                    （启动DHCP服务或中继代理）</p>]]></content>
       
       
+      <categories>
+          
+          <category> 神州数码 </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -197,8 +656,14 @@
       <link href="/2021/12/01/%E7%A5%9E%E5%B7%9E%E6%95%B0%E7%A0%81VLAN%E5%88%92%E5%88%86%E4%B8%8E%E5%BA%94%E7%94%A8/"/>
       <url>/2021/12/01/%E7%A5%9E%E5%B7%9E%E6%95%B0%E7%A0%81VLAN%E5%88%92%E5%88%86%E4%B8%8E%E5%BA%94%E7%94%A8/</url>
       
-        <content type="html"><![CDATA[<p>   VLAN划分及应用<br> VLAN的划分：<br>DCRS-5650-28(config)#vlan     100（创建VLAN）<br>DCRS-5650-28(config-vlan100)#switchport   interface     e0/0/1-3（把E1-3端口加入VLAN）(EXIT/INTERFACE rang F0/1-3/SWITCHPORT access vlan 100)<br>DCRS-5650-28(config-vlan100)#switchport   interface  e0/0/4;6（把E4、E6端口加入VLAN）<br>DCRS-5650-28(config)#int     vlan  100 （设置VLAN）<br>DCRS-5650-28(config-if-vlan100)#ip     address    1.1.1.1     255.255.255.0（设置VLAN的IP）<br>相同VLAN间的通信：<br>DCRS-5650-28(config-if-vlan100)#int     e0/0/1<br>DCRS-5650-28(config-if-ethernet0/0/1)#switchport     trunk    encapsulation dot1q(封装)<br>DCRS-5650-28(config-if-ethernet0/0/1)#switchport     mode     trunk（设置接口为中继模式）<br>DCRS-5650-28(config-if-ethernet0/0/1)#switchport     trunk     allowed       vlan     all<br>（设置允许通过该端口的所有VLAN）<br>经测试，在设置跨交换机的vlan间通信时，两交换机所连的端口都需设置中继</p><p>私有VLAN：<br>(用于vlan间的互访，进到vlan中配置)<br>private-vlan  [ primary | community | isolated | association ] (主| 团体| 隔扇| 联合 )</p><p>switch(Config)#vlan 100<br>switch(Config-Vlan100)#private-vlan primary        （设置主vlan）<br>switch(Config)#vlan 200<br>switch(Config-Vlan200)#private-vlan community            （设置群体vlan）<br>switch(Config)#vlan 300<br>switch(Config-Vlan300)#private-vlan community            （设置群体vlan）<br>switch(Config)#vlan 400<br>switch(Config-Vlan400)#private-vlan isolated            （设置隔离vlan）</p><p>switch(Config)#vlan 100<br>switch(Config-Vlan100)#private-vlan association 200;300;400        （vlan 之间的关联）<br>switch(Config-Vlan100)#switchport interface ethernet 0/0/1-4<br>switch(Config-Vlan100)#vlan 200<br>switch(Config-Vlan200)#switchport interface ethernet 0/0/7-12<br>switch(Config-Vlan200)#vlan 300<br>switch(Config-Vlan300)#switchport interface ethernet 0/0/13-18<br>switch(Config-Vlan300)#vlan 400<br>switch(Config-Vlan400)#switchport interface ethernet 0/0/19-24</p><p>创建私有 vlan 的时候，先做关联，再添加端口。因为关联时，会自动把原vlan 的<br>端口移除。</p><p>相关命令:<br>Vlan <vlan-id> //创建VLAN，<vlan-id>是VID号；<br>Name <name>//给VLAN命名；<br>Switchport access vlan <vlan-id>  //处于某个access端口状态，将当前端口加入到指定的vlan中；<br>Switchpor interface <interface-list> //进入vlan状态，将一个或多个端口添加到vlan中；<br>Switchport mode {trunk|access} //设置交换机的端口access或trunk模式；<br>Switchport trunk allowed  VLAN ALL  //设置trunk端口允许通过所有VLAN；<br>Switchport trunk native vlan<vlan-id>  //设置trunk端口的PVID；<br>Vlan ingress disable    //关闭端口的VLAN入口规则。</p>]]></content>
+        <content type="html"><![CDATA[<p>   VLAN划分及应用<br> VLAN的划分：<br>DCRS-5650-28(config)#vlan     100（创建VLAN）<br>DCRS-5650-28(config-vlan100)#switchport   interface     e0/0/1-3（把E1-3端口加入VLAN）(EXIT/INTERFACE rang F0/1-3/SWITCHPORT access vlan 100)<br>DCRS-5650-28(config-vlan100)#switchport   interface  e0/0/4;6（把E4、E6端口加入VLAN）<br>DCRS-5650-28(config)#int     vlan  100 （设置VLAN）<br>DCRS-5650-28(config-if-vlan100)#ip     address    1.1.1.1     255.255.255.0（设置VLAN的IP）<br>相同VLAN间的通信：<br>DCRS-5650-28(config-if-vlan100)#int     e0/0/1<br>DCRS-5650-28(config-if-ethernet0/0/1)#switchport&nbsp;    trunk&nbsp;   encapsulation&nbsp;dot1q(封装)<br>DCRS-5650-28(config-if-ethernet0/0/1)#switchport     mode     trunk（设置接口为中继模式）<br>DCRS-5650-28(config-if-ethernet0/0/1)#switchport     trunk     allowed       vlan     all<br>（设置允许通过该端口的所有VLAN）<br>经测试，在设置跨交换机的vlan间通信时，两交换机所连的端口都需设置中继</p><p>私有VLAN：<br>(用于vlan间的互访，进到vlan中配置)<br>private-vlan  [ primary | community | isolated | association ] (主| 团体| 隔扇| 联合 )</p><p>switch(Config)#vlan 100<br>switch(Config-Vlan100)#private-vlan primary        （设置主vlan）<br>switch(Config)#vlan 200<br>switch(Config-Vlan200)#private-vlan community            （设置群体vlan）<br>switch(Config)#vlan 300<br>switch(Config-Vlan300)#private-vlan community            （设置群体vlan）<br>switch(Config)#vlan 400<br>switch(Config-Vlan400)#private-vlan isolated            （设置隔离vlan）</p><p>switch(Config)#vlan 100<br>switch(Config-Vlan100)#private-vlan association 200;300;400        （vlan 之间的关联）<br>switch(Config-Vlan100)#switchport interface ethernet 0/0/1-4<br>switch(Config-Vlan100)#vlan 200<br>switch(Config-Vlan200)#switchport interface ethernet 0/0/7-12<br>switch(Config-Vlan200)#vlan 300<br>switch(Config-Vlan300)#switchport interface ethernet 0/0/13-18<br>switch(Config-Vlan300)#vlan 400<br>switch(Config-Vlan400)#switchport interface ethernet 0/0/19-24</p><p>创建私有 vlan 的时候，先做关联，再添加端口。因为关联时，会自动把原vlan 的<br>端口移除。</p><p>相关命令:<br>Vlan <vlan-id> //创建VLAN，<vlan-id>是VID号；<br>Name <name>//给VLAN命名；<br>Switchport access vlan <vlan-id>  //处于某个access端口状态，将当前端口加入到指定的vlan中；<br>Switchpor interface <interface-list> //进入vlan状态，将一个或多个端口添加到vlan中；<br>Switchport mode {trunk|access} //设置交换机的端口access或trunk模式；<br>Switchport trunk allowed  VLAN ALL  //设置trunk端口允许通过所有VLAN；<br>Switchport trunk native vlan<vlan-id>  //设置trunk端口的PVID；<br>Vlan ingress disable    //关闭端口的VLAN入口规则。</vlan-id></interface-list></vlan-id></name></vlan-id></vlan-id></p>]]></content>
       
+      
+      <categories>
+          
+          <category> 神州数码 </category>
+          
+      </categories>
       
       
         <tags>
@@ -221,6 +686,12 @@
         <content type="html"><![CDATA[<p>  交换机、路由器设备管理<br>Switch<br>配置设备名称：<br>DCRS-5650-28(config)#hostname     swx<br>特权用户密码：<br>DCRS-5650-28(config)#enable     password     shenzhou   (明文方式)<br>DCRS-5650-28(config)#enable     password     8     shenzhou  (密文方式)<br>Telnet登陆管理：<br>DCRS-5650-28(config)#telnet-user    shenzhou       password      0     digital</p><p>Router<br>配置设备名称：<br>Router_config#hostname     Rx<br>特权用户密码：<br>Rx_config#enable     password     0     shenzhou     level     15（设置最高级别的明文密码）<br>Rx_config#enable     password     7     shenzhou     level    15（设置最高级别的密文密码）<br>Rx_config#aaa     authentication     enable     default     enable（设置aaa验证）<br>Telnet登陆管理：<br>Rx_config#username     client     password         shenzhou（设置Telnet用户名和密码）<br>Rx_config#aaa     authentication     login     default     local（设置本地用户信息进行验证）<br>Rx_config#aaa     authentication     enable     default     none（设置特权用户信息进行验证）<br>（line命令可以不用）<br>Rx_config#line     vty     0     4（最多允许4个用户登陆）<br>Rx_config_line#login     authentication     default（Telnet使用默认认证列表）</p><p>经过测试，配置路由器时，设置telnet时，需同时设置login，enable验证，否则会出现“验证错误”</p><p>经过测试，配置交换机时，用户的建立注意设置级别，否则用户在telnet，web管理登录时，不能进入特权模式或提示用户权限不足。</p>]]></content>
       
       
+      <categories>
+          
+          <category> 神州数码 </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -242,6 +713,12 @@
         <content type="html"><![CDATA[<p> DHCP中继代理<br>拓扑架构：<br>DHCP-Relay:  DHCP中继代理<br>   NET1: NAT模式     192.168.100.1/24    eno33554960<br>   NET2: 仅主机模式  192.168.200.1/24    eno16777736</p><p>DHCP-Server: DHCP服务器<br>   NET1: NAT模式    192.168.100.100/24  默认网关：192.168.100.1<br>   ens33</p><p>Client：客户端<br>   NET2网络：仅主机模式  自动获取IP地址 eno16777736</p><p>一、配置DHCP服务器<br>第一步：准备工作：<br>（1）配置IP地址和主机名<br>（2）关闭防火墙firewalld和SElinux<br>[root@dhcpserver ~]# systemctl stop firewalld<br>[root@dhcpserver ~]# systemctl disable firewalld</p><p>[root@dhcpserver ~]# setenforce 0<br>[root@dhcpserver ~]# getenforce<br>Permissive<br>（或[root@dhcpserver ~]# vi /etc/selinux/config<br>    SELINUX=disabled<br>）</p><p>（3）配置本地YUM源<br>[root@dhcpserver ~]# mkdir /media/cdrom<br>[root@dhcpserver ~]# ls /media/cdrom</p><p>[root@dhcpserver ~]# mount /dev/cdrom /media/cdrom<br>mount: /dev/sr0 写保护，将以只读方式挂载<br>[root@dhcpserver ~]# ls /media/cdrom<br>CentOS_BuildTag  GPL       LiveOS    RPM-GPG-KEY-CentOS-7<br>EFI              images    Packages  RPM-GPG-KEY-CentOS-Testing-7<br>EULA             isolinux  repodata  TRANS.TBL</p><p>[root@dhcpserver ~]# cd /etc/yum.repos.d/<br>[root@dhcpserver yum.repos.d]# ls<br>CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo<br>CentOS-CR.repo         CentOS-Media.repo<br>CentOS-Debuginfo.repo  CentOS-Sources.repo<br>[root@dhcpserver yum.repos.d]# mv * /tmp   将原有的repo文件移到/tmp目录<br>   （或删除也可以，rm -rf /etc/yum.repos.d/Cent-*)<br>[root@dhcpserver yum.repos.d]# ls</p><p>[root@dhcpserver yum.repos.d]# vi local.repo<br>[centos]<br>name=centos<br>baseurl=file:///media/cdrom<br>gpgcheck=0<br>enabled=1</p><p>[root@dhcpserver yum.repos.d]# yum clean all<br>已加载插件：fastestmirror, langpacks<br>正在清理软件源： centos<br>Cleaning up everything<br>[root@dhcpserver yum.repos.d]# yum repolist<br>已加载插件：fastestmirror, langpacks<br>centos                                           | 3.6 kB     00:00<br>(1/2): centos/group_gz                             | 166 kB   00:00<br>(2/2): centos/primary_db                           | 3.1 MB   00:00<br>Determining fastest mirrors<br>源标识                           源名称                            状态<br>centos                           centos                            3,971<br>repolist: 3,971</p><p>第二步：安装DHCP软件包<br>[root@dhcpserver yum.repos.d]# yum repolist</p><p>[root@dhcpserver yum.repos.d]# cd /etc/dhcp/<br>[root@dhcpserver dhcp]# ls<br>dhclient.d  dhclient-exit-hooks.d  dhcpd6.conf  dhcpd.conf  scripts</p><p>有两个重要的文件：<br>DHCP服务配置文件：/etc/dhcp/dhcpd.conf<br>DHCP配置文件的模板文件：/usr/share/doc/dhcp*/dhcpd.conf.example</p><p>[root@dhcpserver dhcp]# cat dhcpd.conf<br>#</p><h1 id="DHCP-Server-Configuration-file"><a href="#DHCP-Server-Configuration-file" class="headerlink" title="DHCP Server Configuration file."></a>DHCP Server Configuration file.</h1><h1 id="see-usr-share-doc-dhcp-dhcpd-conf-example"><a href="#see-usr-share-doc-dhcp-dhcpd-conf-example" class="headerlink" title="see /usr/share/doc/dhcp*/dhcpd.conf.example"></a>see /usr/share/doc/dhcp*/dhcpd.conf.example</h1><h1 id="see-dhcpd-conf-5-man-page"><a href="#see-dhcpd-conf-5-man-page" class="headerlink" title="see dhcpd.conf(5) man page"></a>see dhcpd.conf(5) man page</h1><h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>从模板文件复制内容到/etc/dhcp/dhcpd.conf配置文件<br>方法一：<br>[root@dhcpserver dhcp]# vi dhcpd.conf<br>:r /usr/share/doc/dhcp-4.2.5/dhcpd.conf.example</p><p>方法二：采用COPY方式<br>[root@dhcpserver dhcp]# cp -f /usr/share/doc/dhcp-4.2.5/dhcpd.conf.example  dhcpd.conf<br>cp：是否覆盖”dhcpd.conf”？ y</p><p>第三步：配置/etc/dhcp/dhcpd.conf配置文件<br>[root@dhcpserver dhcp]# vi dhcpd.conf </p><p>option domain-name-servers 192.168.100.100;</p><p>default-lease-time 600;<br>max-lease-time 7200;</p><p>subnet 192.168.100.0 netmask 255.255.255.0 {<br>  range 192.168.100.101 192.168.100.150;<br>  option routers 192.168.100.1;<br>  option broadcast-address 192.168.100.255;<br>  default-lease-time 600;<br>  max-lease-time 7200;<br>}</p><p>subnet 192.168.200.0 netmask 255.255.255.0 {<br>  range 192.168.200.101 192.168.200.150;<br>  option routers 192.168.200.1;<br>  option broadcast-address 192.168.200.255;<br>  default-lease-time 600;<br>  max-lease-time 7200;<br>}</p><p>第四步：重启服务让配置生效<br>[root@dhcpserver dhcp]# systemctl restart dhcpd<br>[root@dhcpserver dhcp]# systemctl enable dhcpd<br>Created symlink from /etc/systemd/system/multi-user.target.wants/dhcpd.service to /usr/lib/systemd/system/dhcpd.service.</p><p>[root@dhcpserver dhcp]# systemctl status dhcpd</p><p>[root@dhcpserver dhcp]# netstat -nulp<br>Active Internet connections (only servers)<br>Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name<br>udp        0      0 0.0.0.0:5353            0.0.0.0:*                           735/avahi-daemon: r<br>udp        0      0 0.0.0.0:41220           0.0.0.0:*                           735/avahi-daemon: r<br>udp        0      0 127.0.0.1:323           0.0.0.0:*                           789/chronyd<br>udp        0      0 192.168.122.1:53        0.0.0.0:*                           2146/dnsmasq<br>udp        0      0 0.0.0.0:67              0.0.0.0:*                           5064/dhcpd<br>udp        0      0 0.0.0.0:67              0.0.0.0:*                           2146/dnsmasq        </p><p>二、配置DHCP中继服务器，并开启路由转发功能（xserver1虚拟机)<br>第一步：准备工作<br>1.配置IP地址，主机名<br>nmtui</p><p>ip address show</p><p>测试与DHCP服务器192.168.100.100<br>[root@dhcprelay ~]# ping 192.168.100.100<br>PING 192.168.100.100 (192.168.100.100) 56(84) bytes of data.<br>64 bytes from 192.168.100.100: icmp_seq=1 ttl=64 time=4.11 ms<br>64 bytes from 192.168.100.100: icmp_seq=2 ttl=64 time=0.921 ms<br>^C<br>— 192.168.100.100 ping statistics —<br>2 packets transmitted, 2 received, 0% packet loss, time 1002ms<br>rtt min/avg/max/mdev = 0.921/2.515/4.110/1.595 ms</p><p>[root@localhost ~]# hostnamectl set-hostname dhcprelay<br>[root@localhost ~]# bash</p><p>2.关闭防火墙和SELinux<br>[root@dhcprelay ~]# systemctl stop firewalld<br>[root@dhcprelay ~]# systemctl disable firewalld<br>Removed symlink /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service.<br>Removed symlink /etc/systemd/system/basic.target.wants/firewalld.service.<br>[root@dhcprelay ~]#<br>[root@dhcprelay ~]# setenforce 0<br>[root@dhcprelay ~]# getenforce<br>Permissive</p><p>3.配置本地YUM源<br>[root@dhcprelay ~]# mkdir /opt/centos<br>[root@dhcprelay ~]# mount CentOS-7-x86_64-DVD-1511.iso /opt/centos<br>mount: /dev/loop0 is write-protected, mounting read-only<br>[root@dhcprelay ~]# ls /opt/centos<br>CentOS_BuildTag  GPL       LiveOS    RPM-GPG-KEY-CentOS-7<br>EFI              images    Packages  RPM-GPG-KEY-CentOS-Testing-7<br>EULA             isolinux  repodata  TRANS.TBL</p><p>[root@dhcprelay ~]# cd /etc/yum.repos.d/<br>[root@dhcprelay yum.repos.d]# ls<br>CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo<br>CentOS-CR.repo         CentOS-Media.repo<br>CentOS-Debuginfo.repo  CentOS-Sources.repo<br>[root@dhcprelay yum.repos.d]# rm -rf CentOS-*<br>[root@dhcprelay yum.repos.d]# ls</p><p>[root@dhcprelay yum.repos.d]# vi local.repo<br>[centos]<br>name=centos<br>baseurl=file:///opt/centos<br>gpgcheck=0<br>enabled=1</p><p>[root@dhcprelay yum.repos.d]# yum clean all<br>Loaded plugins: fastestmirror<br>Cleaning repos: centos<br>Cleaning up everything<br>[root@dhcprelay yum.repos.d]# yum repolist<br>Loaded plugins: fastestmirror<br>centos                                        | 3.6 kB     00:00<br>(1/2): centos/group_gz                          | 155 kB   00:00<br>(2/2): centos/primary_db                        | 2.8 MB   00:00<br>Determining fastest mirrors<br>repo id                         repo name                      status<br>centos                          centos                         3,723<br>repolist: 3,723</p><p>4.安装DHCP服务<br>[root@dhcprelay yum.repos.d]# yum install dhcp -y<br>[root@dhcprelay yum.repos.d]# yum install net-tools -y</p><p>能够使用DHCP中继代工具 dhcrelay</p><p>第二步：开启路由转发功能<br>[root@dhcprelay ~]# vi /etc/sysctl.conf<br>添加如下行：<br>net.ipv4.ip_forward=1</p><p>第三步：配置DHCP RELAY中继功能<br>[root@dhcprelay ~]# dhcrelay 192.168.100.100<br>Dropped all unnecessary capabilities.<br>Internet Systems Consortium DHCP Relay Agent 4.2.5<br>Copyright 2004-2013 Internet Systems Consortium.<br>All rights reserved.<br>For info, please visit <a href="https://www.isc.org/software/dhcp/">https://www.isc.org/software/dhcp/</a><br>Listening on LPF/eno33554960/00:0c:29:bf:e8:9b<br>Sending on   LPF/eno33554960/00:0c:29:bf:e8:9b<br>Listening on LPF/eno16777736/00:0c:29:bf:e8:91<br>Sending on   LPF/eno16777736/00:0c:29:bf:e8:91<br>Sending on   Socket/fallback</p><p>[root@dhcprelay ~]# netstat -nulp<br>Active Internet connections (only servers)<br>Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name<br>udp        0      0 0.0.0.0:53221           0.0.0.0:*                           10084/dhcrelay<br>udp        0      0 0.0.0.0:67              0.0.0.0:*                           10084/dhcrelay<br>udp6       0      0 :::30951                :::*                                10084/dhcrelay</p><p>三、配置dhcp客户端自动获取IP地址并查看验证</p><p>ip address show</p><p>若要查看详细的IP参数：<br>nmcli connection show 网卡名称   </p>]]></content>
       
       
+      <categories>
+          
+          <category> Linux </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -260,8 +737,14 @@
       <link href="/2021/12/01/yum%E6%9C%8D%E5%8A%A1/"/>
       <url>/2021/12/01/yum%E6%9C%8D%E5%8A%A1/</url>
       
-        <content type="html"><![CDATA[<p> yum服务<br>cd /etc/yum.repos.d/<br>ls<br>rm -rf *<br>vi dvd.repo<br>[dvd]<br>name=dvd<br>baseurl=file:///dvd<br>gpgcheck=0<br>enabled=1</p><p>mkdir /dvd<br>mount /dev/cdrom /dvd</p><p>yum install -y 服务</p>]]></content>
+        <content type="html"><![CDATA[<p> yum服务</p><p>概念：<br>服务（服务器配置）<br>Yum源概念:如果你linux用于搭建和配置服务器的话，那肯定要基于网络中的各种服务和协<br>议，但部署这些服务大多数要先下载他的安装包，如果你刚好又是字符界面的，那么下东西<br>的方式也和windows的图形化界面不一样，图形化可以根据引导点击下载，但linux的字符<br>界面就不一样了，需要用命令去下载，一般其常用的命令有两种，一个是rpm命令源码包<br> 安装，一个是yum命令安装，碍于依赖性（b站兄弟连课程中或百度可自行了解），所以大<br>多数情况下都用的是yum命令下载安装包，但是想使用yum命令是需要去配置yum源的<br>（可理解为支持yum命令的一些参数和操作），这里只介绍本地yum源的配置。</p><p>1、创建一个光盘挂载点   <img src="https://s2.loli.net/2021/12/04/EMaSKLnBrme2Djs.png"></p><p>2、挂载光盘到/media/cdrom下  <img src="https://s2.loli.net/2021/12/04/HwFitLoaNSe9J2z.png"></p><p>3、进入yum源配置目录下，给名为CentOS-Base的文件改名，加上后缀为.repo，使网络yum源失效  <img src="https://s2.loli.net/2021/12/04/rfQ519gl7tDhz3K.png"><br>（因为系统先检测的是网络yum源，但是你又没有网，所以网络yum源是用不了的。<br>系统识别yum是根据他的后缀，只要后缀为.repo的，系统一般都会认定为Yum文件，<br>所以让系统识别不出来这个文件，自然网络yum源就失效了。让系统识别不出来的办<br>法就是修改他的后缀）</p><p>5、<img src="https://s2.loli.net/2021/12/04/8smgHuTwULiZ6I1.png" alt=" "><br>      <img src="https://s2.loli.net/2021/12/04/ngk9FatsQR2zGeY.png" alt=" "><br>      <img src="https://s2.loli.net/2021/12/04/JpotTybVHgZcwml.png" alt=" "><br>（编辑名为CentOS-Media.repo的文件，进去后找到enabled=0这行（第20行），并将0<br>修改为1（0为关闭，1为启动），然后就可以保存退出了。【第一张是没改之前的，第二张<br>是改了之后的</p><p>6、配置完了本地yum源后就可以用yum源下东西了，因为CentOS6.5是默认没有vim<br>编辑器的，需要我们手动下载，我们测试一下.<br> <img src="https://s2.loli.net/2021/12/04/uhtVqYl8xXD13vf.png" alt=" "><br>执行玩这一步以后就是下载过程，我就不截图了<br>-y表示自动确认 install表示安装 后面跟包名</p>]]></content>
       
+      
+      <categories>
+          
+          <category> Linux </category>
+          
+      </categories>
       
       
         <tags>
@@ -284,6 +767,12 @@
         <content type="html"><![CDATA[<p>  挂载Linux安装盘</p><h1 id="mkdir-mnt-cdrom"><a href="#mkdir-mnt-cdrom" class="headerlink" title="mkdir /mnt/cdrom"></a>mkdir /mnt/cdrom</h1><h1 id="mount-–t-iso9600-dev-sr0-mnt-cdrom"><a href="#mount-–t-iso9600-dev-sr0-mnt-cdrom" class="headerlink" title="mount –t iso9600 /dev/sr0 /mnt/cdrom"></a>mount –t iso9600 /dev/sr0 /mnt/cdrom</h1><p> 使网络yum源失效<br> cd /etc/yum.repos.d/<br> mv CentOS-Base.repo CentOS-Base.repo.bak<br> 使光盘yum源生效<br> 修改CentOS-Media.repo<br> baseurl=file:///mnt/cdrom</p><h1 id="file-media-cdrom"><a href="#file-media-cdrom" class="headerlink" title="file:///media/cdrom"></a>file:///media/cdrom</h1><h1 id="file-media-cdrecorder"><a href="#file-media-cdrecorder" class="headerlink" title="file:///media/cdrecorder"></a>file:///media/cdrecorder</h1><p> enable=1</p>]]></content>
       
       
+      <categories>
+          
+          <category> Linux </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -304,6 +793,12 @@
       
         <content type="html"><![CDATA[<p>DHCP:Dynamic Host Configuration Protocol</p><p>255.255.255.255</p><p>Centos7配置DHCP服务器：<br>准备工作：<br>1.配置DHCP服务器IP地址，静态IP地址，主机名<br>2.把防火墙firewalld和SELinux临时关闭<br>systemctl stop firewalld<br>setenforce 0<br>3.配置本地YUM源<br>（1）先挂载ISO镜像 /dev/sr0    /dev/cdrom<br>（2）创建一个挂载点/media/cdrom<br>  (3)将光驱挂载到创建的挂载点<br>[root@dhcpserver<del>]#mount /dev/cdrom  /media/cdrom<br>mount: /dev/sr0 写保护，将以只读方式挂载<br>[root@dhcpserver</del>]#ls /media/cdrom/<br>(4)配置本地yum源<br>    首先，将/etc/yum.repos.d/目录下所有原始的repo文件移除或删除<br>[root@dhcpserver]# cd/etc/ yum. repos. d/<br>[root@dhcpserver] yum. repos. d]#ls<br>CentOS-Base. repoCent0S-Debuginfo. repo<br>CentoS- Media. repo<br>CentoS Vault. repo<br>CentOS-CR. repo<br>CentOS fasttrack. repoCentoS Sources. repo<br>[root@dhcpserver yum. repos. d]  mv * /tmp<br>[root@dhcpserver yum. repos. d] ls</p><p>接着，创建本地的yum源文件<br>[root@dhcpserver yum. repos. d]vi  yin.repo<br>[centos]<br>name=centos<br>baseurl=file: ///media/ cdrom<br>gpgcheck=0<br>enabled=1</p><p>第一步：安装DHCP服务软件包<br>DHCP配置文件：/etc/dhcp/dhcpd.conf<br>DHCP配置文件模板文件：/usr/share/doc/dhcp-4.2.5/dhcpd.conf.example</p><p>第二步：配置DHCP服务器<br>vi  /etc/dhcp/dhcpd.conf</p><p>1、创建作用域，设置IP地址池，若有排除需要设置排队地址，子网掩码，默认网关，DNS服务器，租约期限<br>子网网段：192.168.220.0<br>IP地址范围：192.168.220.101  192.168.220.150<br>子网掩码：192.168.220.1<br>DNS服务器：192.168.0.4  202.93.209.133</p><p>subnet 192.168. 220.0 netmask 255.255.255.0<br>range 192. 168. 220. 101192.168.220.150<br>option domain-name -servers<br>192.168.0. 4, 202.96.209. 133;<br>option domain-name xxjs. com”;<br>option routers 192.168.220.1;<br>opt ion broadcast address 192.168.220.255;<br>default-lease-t ime 600;<br>max- lease-t ime 7200;</p><p>2、重启DHCP服务让配置生效<br>【root@dhcpserver dhep】# systemctl restart dhcpd<br>【root@dhcpserver dhtp】# systemctl status dhcpd<br>【root@dhcpserver dhtp】#netstat -nulp<br>udp     0        0  0.0.0.0:67       0.0.0.0:*      4837/dhcpd</p><p>第三步：客户端自动获取IP地址验证</p><p>DHCP服务器：CENTOS7   192.168.220.11/24     DHCPServer<br>DHCP客户端： xserver1   client1  自动获取IP地址</p><p>nmcli  connection show  eno33554960</p><p>第四步：保留IP配置<br>client:  00:0c:29:bf:e8:9b</p><p>【root@dhcpserver dhtp】#vi dhcpd.conf</p><pre><code>      75  host  client1      76    hardware  ethernet   00:0c:29:bf:e8:9b;      77     fixed-address  192.168.220.105</code></pre>]]></content>
       
+      
+      <categories>
+          
+          <category> Linux </category>
+          
+      </categories>
       
       
         <tags>

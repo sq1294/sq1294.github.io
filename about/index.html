@@ -41,13 +41,16 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
 
 
 
    <style>
     body{
-       background-image: url(https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fclubimg.club.vmall.com%2Fdata%2Fattachment%2Fforum%2F202106%2F21%2F215459zwfqep76jcvn0qhd.jpg&refer=http%3A%2F%2Fclubimg.club.vmall.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641003950&t=5a61fa0e9106c58bcd0d8dc7afc277d2);
+       background-image: url(http://cdn-ali-img-shstaticbz.shanhutech.cn/bizhi/staticwp/202110/529e6cb9b6d2e79c6398008c281aa3b2--3565899390.jpg);
        background-repeat:no-repeat;
        background-size: 100% 100%;
        background-attachment:fixed;
@@ -390,16 +393,21 @@
                     <div class="post-statis col l4 hide-on-med-and-down" data-aos="zoom-in-right">
                         
 <div class="statis">
-    <span class="count"><a href="/">15</a></span>
+    <span class="count"><a href="/">30</a></span>
     <span class="name">文章</span>
 </div>
 
 
 
+<div class="statis">
+    <span class="count"><a href="/categories">4</a></span>
+    <span class="name">分类</span>
+</div>
+
 
 
 <div class="statis">
-    <span class="count"><a href="/tags">18</a></span>
+    <span class="count"><a href="/tags">34</a></span>
     <span class="name">标签</span>
 </div>
 
@@ -415,16 +423,21 @@
                                 <div class="post-statis hide-on-large-only" data-aos="zoom-in-right">
                                     
 <div class="statis">
-    <span class="count"><a href="/">15</a></span>
+    <span class="count"><a href="/">30</a></span>
     <span class="name">文章</span>
 </div>
 
 
 
+<div class="statis">
+    <span class="count"><a href="/categories">4</a></span>
+    <span class="name">分类</span>
+</div>
+
 
 
 <div class="statis">
-    <span class="count"><a href="/tags">18</a></span>
+    <span class="count"><a href="/tags">34</a></span>
     <span class="name">标签</span>
 </div>
 
@@ -568,7 +581,7 @@
                 name: '文章篇数',
                 type: 'line',
                 color: ['#6772e5'],
-                data: [0,0,0,0,0,0,0,0,0,0,0,1,14],
+                data: [0,0,0,0,0,0,0,0,0,0,0,1,29],
                 markPoint: {
                     symbolSize: 45,
                     color: ['#fa755a','#3ecf8e','#82d3f4'],
@@ -610,7 +623,7 @@
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [],
+                data: [{"name":"Cisco","value":21},{"name":"Linux","value":4},{"name":"华为","value":1},{"name":"神州数码","value":4}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -634,7 +647,7 @@
         xAxis: [
             {
                 type: 'category',
-                data: ["Cisco","Linux","神州数码","DHCP配置","帧中继配置","组播配置","DHCP中继代理","yum服务","ospf","防火墙多模式ASA配置"]
+                data: ["Cisco","cisco","Linux","神州数码","DHCP配置","DHCP","组播配置","帧中继配置","DHCP中继代理","NAT/NAPT"]
             }
         ],
         yAxis: [
@@ -647,7 +660,7 @@
                 type: 'bar',
                 color: ['#82d3f4'],
                 barWidth : 18,
-                data: [6,4,4,2,1,1,1,1,1,1],
+                data: [13,8,4,4,2,1,1,1,1,1],
                 markPoint: {
                     symbolSize: 45,
                     data: [{
@@ -726,6 +739,15 @@
                 
                 
                 
+                <script type="text/javascript" src="//cdn.jsdelivr.net/npm/artitalk"></script>
+<div id="artitalk_main"></div>
+<script>
+    new Artitalk({
+        appId: '',
+        appKey: '',
+    })
+</script>
+                
                 
             </div>
         </div>
@@ -733,7 +755,8 @@
 </main>
 
 
-    <footer class="page-footer bg-color">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<footer class="page-footer bg-color">
     
         <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
 <style>
@@ -903,6 +926,7 @@
 </footer>
 
 <div class="progress-bar"></div>
+
 
 
     <!-- 搜索遮罩框 -->
@@ -1168,6 +1192,6 @@ $(function () {
     <script src="/libs/instantpage/instantpage.js" type="module"></script>
     
 
-</body>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 
 </html>
